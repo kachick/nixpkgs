@@ -14,8 +14,6 @@ rustPlatform.buildRustPackage rec {
   buildInputs = lib.optionals stdenv.isDarwin [
     Security
     darwin.apple_sdk_11_0.frameworks.CoreFoundation
-    darwin.apple_sdk_11_0.frameworks.SystemConfiguration
-    libiconv
   ];
 
   # Tests fail because they expect a test WASM plugin. Tests already run for
