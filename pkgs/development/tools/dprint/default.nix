@@ -1,4 +1,4 @@
-{ lib, stdenv, fetchCrate, rustPlatform, libiconv, Security, Foundation }:
+{ lib, stdenv, fetchCrate, rustPlatform, libiconv, Security }:
 
 rustPlatform.buildRustPackage rec {
   pname = "dprint";
@@ -11,7 +11,12 @@ rustPlatform.buildRustPackage rec {
 
   cargoHash = "sha256-DauLzn+QkqTCPubrtasAZmD3DrIXkHk7zd8g589TCCk=";
 
-  buildInputs = lib.optionals stdenv.isDarwin [ Security Foundation libiconv ];
+  buildInputs = lib.optionals stdenv.isDarwin [
+    Security
+    pkgs.darwin.apple_sdk_11_0.frameworks.CoreFoundation
+    pkgs.darwin.apple_sdk_11_0.frameworks.SystemConfiguration
+    libiconv
+  ];
 
   # Tests fail because they expect a test WASM plugin. Tests already run for
   # every commit upstream on GitHub Actions
