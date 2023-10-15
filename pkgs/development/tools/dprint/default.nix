@@ -1,4 +1,4 @@
-{ lib, stdenv, fetchCrate, rustPlatform, libiconv, Security }:
+{ lib, stdenv, fetchCrate, rustPlatform, libiconv, Security, darwin }:
 
 rustPlatform.buildRustPackage rec {
   pname = "dprint";
@@ -13,8 +13,8 @@ rustPlatform.buildRustPackage rec {
 
   buildInputs = lib.optionals stdenv.isDarwin [
     Security
-    pkgs.darwin.apple_sdk_11_0.frameworks.CoreFoundation
-    pkgs.darwin.apple_sdk_11_0.frameworks.SystemConfiguration
+    darwin.apple_sdk_11_0.frameworks.CoreFoundation
+    darwin.apple_sdk_11_0.frameworks.SystemConfiguration
     libiconv
   ];
 
