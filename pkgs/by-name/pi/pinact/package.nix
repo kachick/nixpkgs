@@ -1,8 +1,10 @@
-{ lib
-, fetchFromGitHub
-, buildGoModule
-, testers
-, pinact
+{
+  lib,
+  fetchFromGitHub,
+  buildGoModule,
+  testers,
+  pinact,
+  nix-update-script,
 }:
 
 let
@@ -22,10 +24,15 @@ buildGoModule {
 
   doCheck = true;
 
-  passthru.tests.version = testers.testVersion {
-    package = pinact;
-    command = "pinact --version";
-    version = src.rev;
+  passthru = {
+    tests.version = testers.testVersion {
+      package = pinact;
+      command = "pinact --version";
+      version = src.rev;
+
+    };
+
+    updateScript = nix-update-script { };
   };
 
   ldflags = [
