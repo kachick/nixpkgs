@@ -626,6 +626,13 @@ in
   ovirt-engine-sdk = attrs: {
     buildInputs = [ curl libxml2 ];
     dontBuild = false;
+    patches = [
+      # fix build on darwin: https://patch-diff.githubusercontent.com/raw/oVirt/ovirt-engine-sdk-ruby/pull/17
+      (fetchpatch2 {
+        url = "https://github.com/oVirt/ovirt-engine-sdk-ruby/compare/4.6.0...ef16365a3b67219c59210f3c17a975d899c293d4.patch";
+        hash = "sha256-OX2A7rNgT7IopxWIWw4aeQkpQeYYLRe/fz0v2AyTL+o=";
+      })
+    ];
   };
 
   pango = attrs: {
