@@ -626,13 +626,30 @@ in
   ovirt-engine-sdk = attrs: {
     buildInputs = [ curl libxml2 ];
     dontBuild = false;
+    # Workaround until releasing https://github.com/oVirt/ovirt-engine-sdk-ruby/pull/17
     patches = [
-      # fix build on darwin: https://patch-diff.githubusercontent.com/raw/oVirt/ovirt-engine-sdk-ruby/pull/17
+      # (fetchpatch2 {
+      #   url = "https://github.com/oVirt/ovirt-engine-sdk-ruby/commit/5ba703187b1eae75ae8613a98b5ea33385e56cb3.patch?full_index=1";
+      #   hash = "sha256-nDgCn3AtTqOxQW/PP6jusEDKNsM928KfPoSb2xTqqnc=";
+      # })
       (fetchpatch2 {
-        url = "https://github.com/oVirt/ovirt-engine-sdk-ruby/compare/4.6.0...ef16365a3b67219c59210f3c17a975d899c293d4.patch";
+        url = "https://github.com/oVirt/ovirt-engine-sdk-ruby/compare/c9fb74ae09f1c84f0353862709cbece8acb61654...ef16365a3b67219c59210f3c17a975d899c293d4.patch?full_index=1";
         hash = "sha256-OX2A7rNgT7IopxWIWw4aeQkpQeYYLRe/fz0v2AyTL+o=";
+        includes = [ "sdk/ext/ovirtsdk4c/ov_http_client.c" ];
+        # stripLen = 1;
       })
+      # (fetchpatch2 {
+      #   url = "https://github.com/oVirt/ovirt-engine-sdk-ruby/commit/ef16365a3b67219c59210f3c17a975d899c293d4.patch?full_index=1";
+      #   hash = "sha256-iL4Crm+bW8lee4zI74JOlsVZ3Te6rMCjeapVPR0hj44=";
+      # })
     ];
+    prePatch = ''
+      mkdir -p sdk
+      mv ext ./sdk/
+    '';
+    postPatch = ''
+      mv ./sdk/ext ./
+    '';
   };
 
   pango = attrs: {
