@@ -9,7 +9,7 @@ let
   };
 in
 rustPlatform.buildRustPackage {
-  inherit version;
+  inherit pname version;
 
   src = fetchCrate {
     inherit pname version;
