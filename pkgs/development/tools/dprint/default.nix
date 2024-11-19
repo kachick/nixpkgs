@@ -1,9 +1,14 @@
 { lib, stdenv, fetchCrate, rustPlatform, CoreFoundation, Security }:
 
-rustPlatform.buildRustPackage rec {
+let
   pname = "dprint";
   version = "0.47.2";
-
+  testWasmPlugin = builtins.fetchurl {
+    url = "https://github.com/dprint/dprint/raw/refs/tags/${version}/crates/test-plugin/test_plugin.wasm";
+    sha256 = lib.fakeHash;
+  };
+in
+rustPlatform.buildRustPackage {
   src = fetchCrate {
     inherit pname version;
     hash = "sha256-zafRwiXfRACT6G408pXLCk7t6akabOs1VFLRF9SeNWI=";
@@ -13,9 +18,10 @@ rustPlatform.buildRustPackage rec {
 
   buildInputs = lib.optionals stdenv.hostPlatform.isDarwin [ CoreFoundation Security ];
 
-  # Tests fail because they expect a test WASM plugin. Tests already run for
-  # every commit upstream on GitHub Actions
-  doCheck = false;
+  preCheck = ''
+    substituteInPlace $src/src/test_helpers.rs \
+      --replace-fail '../../test-plugin/test_plugin_0_1_0.wasm' '${testWasmPlugin}'
+  '';
 
   meta = with lib; {
     description = "Code formatting platform written in Rust";
