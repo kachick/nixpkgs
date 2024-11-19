@@ -20,14 +20,14 @@ rustPlatform.buildRustPackage {
 
   buildInputs = lib.optionals stdenv.hostPlatform.isDarwin [ CoreFoundation Security ];
 
-  preConfigure = ''
-    substituteInPlace "$src/src/test_helpers.rs" \
+  preBuild = ''
+    substituteInPlace './src/test_helpers.rs' \
       --replace-fail '../../test-plugin/test_plugin_0_1_0.wasm' '${testWasmPlugin}'
   '';
 
-  preCheck = ''
-    export DPRINT_CACHE_DIR="$(mktemp --directory)
-  '';
+  # preCheck = ''
+  #   export DPRINT_CACHE_DIR="$(mktemp --directory)
+  # '';
 
   meta = with lib; {
     description = "Code formatting platform written in Rust";
