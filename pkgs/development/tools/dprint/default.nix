@@ -3,10 +3,13 @@
 let
   pname = "dprint";
   version = "0.47.2";
-  testWasmPlugin = builtins.fetchurl {
-    url = "https://github.com/dprint/dprint/raw/refs/tags/${version}/crates/test-plugin/test_plugin.wasm";
-    sha256 = lib.fakeHash;
-  };
+  # testWasmPlugin = builtins.fetchurl {
+  #   inherit version;
+  #   pname = "dprint-test-plugin";
+  #   # name = "dprint-test-plugin";
+  #   url = "https://github.com/dprint/dprint/raw/refs/tags/${version}/crates/test-plugin/test_plugin.wasm";
+  #   # sha256 = lib.fakeHash;
+  # };
 in
 rustPlatform.buildRustPackage {
   src = fetchCrate {
@@ -20,7 +23,7 @@ rustPlatform.buildRustPackage {
 
   preCheck = ''
     substituteInPlace $src/src/test_helpers.rs \
-      --replace-fail '../../test-plugin/test_plugin_0_1_0.wasm' '${testWasmPlugin}'
+      --replace-fail '../../test-plugin/test_plugin_0_1_0.wasm' 'testWasmPlugin'
   '';
 
   meta = with lib; {
