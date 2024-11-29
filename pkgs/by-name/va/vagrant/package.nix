@@ -1,4 +1,4 @@
-{ stdenv, lib, fetchurl, buildRubyGem, bundlerEnv, ruby, libarchive
+{ stdenv, lib, fetchurl, buildRubyGem, bundlerEnv, ruby_3_2, libarchive
 , libguestfs, qemu, writeText, withLibvirt ? stdenv.hostPlatform.isLinux
 , openssl
 }:
@@ -9,6 +9,7 @@ let
   version = "2.4.1";
   url = "https://github.com/hashicorp/vagrant/archive/v${version}.tar.gz";
   hash = "sha256-Gc+jBuP/rl3b8wUE9hoaMSSqmodyGxMKFAmNTqH+v4k=";
+  ruby = ruby_3_2;
 
   deps = bundlerEnv rec {
     name = "${pname}-${version}";
@@ -118,6 +119,5 @@ in buildRubyGem rec {
     license = licenses.bsl11;
     maintainers = with maintainers; [ tylerjl ];
     platforms = with platforms; linux ++ darwin;
-    broken = true; # build fails on darwin and linux
   };
 }
