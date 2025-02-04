@@ -23,8 +23,9 @@ rustPlatform.buildRustPackage rec {
 
   cargoHash = "sha256-A4v4i6U6BwUMNTI/TO7wTQvNVtQYKGiQfDXOCy8hFTE=";
 
-  # Workaround for errors in the tests
-  doCheck = false;
+  # Workaround for errors: Running tests/compat_tests.rs
+  # error: unexpected argument '--test-threads' found
+  # doCheck = false;
 
   nativeInstallCheckInputs = [
     versionCheckHook
