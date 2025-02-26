@@ -1,0 +1,78 @@
+{
+  lib,
+  buildNpmPackage,
+  fetchFromGitHub,
+  makeWrapper,
+  electron_35,
+  nix-update-script,
+}:
+
+let
+  electron = electron_35;
+in
+
+buildNpmPackage (finalAttrs: {
+  pname = "shogihome";
+  version = "1.22.1";
+
+  src = fetchFromGitHub {
+    owner = "sunfish-shogi";
+    repo = "shogihome";
+    tag = "v${finalAttrs.version}";
+    hash = "sha256-vVKdaFKOx4xm4BK+AjVr4cEDOHpOjOe58k2wUAhB9XA=";
+  };
+
+  npmDepsHash = "sha256-OS5DR+24F98ICgQ6zL4VD231Rd5JB/gJKl+qNfnP3PE=";
+
+  # The prepack script runs the build script, which we'd rather do in the build phase.
+  # npmPackFlags = [ "--ignore-scripts" ];
+
+  env.ELECTRON_SKIP_BINARY_DOWNLOAD = "1";
+  env.npm_config_build_from_source = "true";
+  nativeBuildInputs = [ makeWrapper ];
+
+  makeCacheWritable = true;
+
+  buildPhase = ''
+    runHook preBuild
+
+    cp -r ${electron.dist} electron-dist
+    chmod -R u+w electron-dist
+
+    npm exec electron-builder -- \
+        --dir \
+        -c.electronDist=${electron.dist} \
+        -c.electronVersion=${electron.version}
+
+    runHook postBuild
+  '';
+
+  installPhase = ''
+    runHook preInstall
+
+    makeWrapper '${electron}/bin/electron' "$out/bin/shogihome" \
+      --add-flags "\''${NIXOS_OZONE_WL:+\''${WAYLAND_DISPLAY:+--ozone-platform-hint=auto --enable-features=WaylandWindowDecorations --enable-wayland-ime=true}}" \
+      --inherit-argv0
+
+    runHook postInstall
+  '';
+
+  # NODE_OPTIONS = "--openssl-legacy-provider";
+
+  passthru = {
+    updateScript = nix-update-script { };
+  };
+
+  meta = {
+    description = "Shogi Frontend";
+    homepage = "https://github.com/sunfish-shogi/shogihome";
+    license = with lib.licenses; [
+      mit
+      asl20 # for icons
+    ];
+    maintainers = with lib.maintainers; [
+      kachick
+    ];
+    mainProgram = "shogihome";
+  };
+})
