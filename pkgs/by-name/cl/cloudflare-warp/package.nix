@@ -107,6 +107,11 @@ stdenv.mkDerivation rec {
 
   postInstall = ''
     wrapProgram $out/bin/warp-svc --prefix PATH : ${lib.makeBinPath [ nftables ]}
+  '' + lib.optionalString (stdenv.buildPlatform.canExecute stdenv.hostPlatform) ''
+    installShellCompletion --cmd '${meta.mainProgram}' \
+      --bash <($out/bin/${meta.mainProgram} generate-completions bash) \
+      --fish <($out/bin/${meta.mainProgram} generate-completions fish) \
+      --zsh <($out/bin/${meta.mainProgram} generate-completions zsh)
   '';
 
   doInstallCheck = true;
@@ -142,6 +147,13 @@ stdenv.mkDerivation rec {
       '';
     });
   };
+
+  # postInstall = lib.optionalString (stdenv.buildPlatform.canExecute stdenv.hostPlatform) ''
+  #   installShellCompletion --cmd '${meta.mainProgram}' \
+  #     --bash <($out/bin/${meta.mainProgram} generate-completions bash) \
+  #     --fish <($out/bin/${meta.mainProgram} generate-completions fish) \
+  #     --zsh <($out/bin/${meta.mainProgram} generate-completions zsh)
+  # '';
 
   meta = with lib; {
     description = "Replaces the connection between your device and the Internet with a modern, optimized, protocol";
