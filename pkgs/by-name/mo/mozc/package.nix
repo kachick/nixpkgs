@@ -4,7 +4,7 @@
   fetchFromGitHub,
   qt6,
   pkg-config,
-  protobuf_27,
+  protobuf_29,
   bazel,
   ibus,
   unzip,
@@ -20,13 +20,13 @@ let
 in
 buildBazelPackage rec {
   pname = "mozc";
-  version = "2.30.5544.102"; # make sure to update protobuf if needed
+  version = "2.31.5712.102"; # make sure to update protobuf if needed
 
   src = fetchFromGitHub {
     owner = "google";
     repo = "mozc";
     tag = version;
-    hash = "sha256-w0bjoMmq8gL7DSehEG7cKqp5e4kNOXnCYLW31Zl9FRs=";
+    hash = "sha256-q2QFJetQcoSavPR3ygjjGOTHmlTVWTYm/zYqezRnXcE=";
     fetchSubmodules = true;
   };
 
@@ -67,7 +67,7 @@ buildBazelPackage rec {
   postPatch = ''
     # replace protobuf with our own
     rm -r src/third_party/protobuf
-    cp -r ${protobuf_27.src} src/third_party/protobuf
+    cp -r ${protobuf_29.src} src/third_party/protobuf
     substituteInPlace src/config.bzl \
       --replace-fail "/usr/bin/xdg-open" "${xdg-utils}/bin/xdg-open" \
       --replace-fail "/usr" "$out"
