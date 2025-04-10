@@ -13,7 +13,6 @@
 }:
 
 let
-  pkgFile = builtins.toString ./package.nix;
   # These files can be found in Stockfish/src/evaluate.h
   nnueBigFile = "nn-1111cefa1111.nnue";
   nnueBigHash = "sha256-ERHO+hERa3cWG9SxTatMUPJuWSDHVvSGFZK+Pc1t4XQ=";
@@ -22,9 +21,10 @@ let
     hash = nnueBigHash;
   };
   nnueSmallFile = "nn-37f18f62d772.nnue";
+  nnueSmallHash = "sha256-N/GPYtdy8xB+HWqso4mMEww8hvKrY+ZVX7vKIGNaiZ0=";
   nnueSmall = fetchurl {
     url = "https://tests.stockfishchess.org/api/nn/${nnueSmallFile}";
-    hash = "sha256-N/GPYtdy8xB+HWqso4mMEww8hvKrY+ZVX7vKIGNaiZ0=";
+    hash = nnueSmallHash;
   };
 in
 rustPlatform.buildRustPackage (finalAttrs: {
@@ -68,38 +68,17 @@ rustPlatform.buildRustPackage (finalAttrs: {
         sd
       ];
 
-      text = ''
-        # package_file="$(dirname "$(readlink -f "$0")")/package.nix"
+      runtimeEnv = {
+        PNAME = finalAttrs.pname;
+        PFILE = builtins.toString ./package.nix;
+        GITHUB_REPOSITORY = "${finalAttrs.src.owner}/${finalAttrs.src.repo}";
+        NNUE_BIG_FILE = nnueBigFile;
+        NNUE_BIG_HASH = nnueBigHash;
+        NNUE_SMALL_FILE = nnueBigFile;
+        NNUE_SMALL_HASH = nnueBigHash;
+      };
 
-        new_fishnet_version="$(
-          curl --silent https://api.github.com/repos/${finalAttrs.src.owner}/${finalAttrs.src.repo}/releases/latest | \
-            jq '.tag_name | ltrimstr("v")' --raw-output
-        )"
-
-        update-source-version "${finalAttrs.pname}" "$new_fishnet_version" --ignore-same-version --print-changes
-
-        stockfish_revision="$(curl --silent "https://api.github.com/repos/lichess-org/fishnet/contents/Stockfish?ref=v$new_fishnet_version" | jq .sha --raw-output)"
-
-        stockfish_header="$(curl --silent "https://raw.githubusercontent.com/official-stockfish/Stockfish/$stockfish_revision/src/evaluate.h")"
-
-        new_nnueBig_version="$(echo "$stockfish_header" | rg 'EvalFileDefaultNameBig "nn-(\w+).nnue"' --only-matching --replace '$1')"
-        new_nnueBig_file="nn-''${new_nnueBig_version}.nnue"
-        new_nnueBig_hash="$(nix hash to-sri --type sha256 "$(nix-prefetch-url --type sha256 "https://tests.stockfishchess.org/api/nn/''${new_nnueBig_file}")")"
-
-        # sed -i package.nix \
-        #     -e "s/${nnueBigFile}/''${new_nnueBig_file}/"
-        #     -e "s/${nnueBigHash}/''${new_nnueBig_hash}/"
-
-        sd --string-mode '${nnueBigHash}' "''${new_nnueBig_hash}" '${pkgFile}'
-
-        # new_nnueSmall_version="$(echo "$stockfish_header" | rg 'EvalFileDefaultNameSmall "nn-(\w+).nnue"' --only-matching --replace '$1')"
-
-        # update-source-version '${finalAttrs.pname}.passthru.sources.nnueBig' "$new_nnueBig_version" --ignore-same-version --file=pkgs/by-name/fi/${finalAttrs.pname}/nnue.nix --print-changes
-
-        # update-source-version '${finalAttrs.pname}.passthru.sources.nnueBig' "$new_nnueBig_version" --ignore-same-version --source-key="sources.nnueBig"
-
-        # update-source-version '${finalAttrs.pname}.passthru.sources.nnueSmall' "$new_nnueSmall_version" --ignore-same-version --source-key="sources.nnueSmall"
-      '';
+      text = builtins.readFile ./update.bash;
     });
   };
 
