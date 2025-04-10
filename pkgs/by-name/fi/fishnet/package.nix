@@ -83,7 +83,7 @@ rustPlatform.buildRustPackage (finalAttrs: {
 
         new_nnueBig_version="$(echo "$stockfish_header" | rg 'EvalFileDefaultNameBig "nn-(\w+).nnue"' --only-matching --replace '$1')"
         new_nnueBig_file="nn-''${new_nnueBig_version}.nnue"
-        new_nnueBig_hash="$(nix hash to-sri --type sha256 "$(nix-prefetch-url "https://tests.stockfishchess.org/api/nn/''${new_nnueBig_file}")")"
+        new_nnueBig_hash="$(nix hash to-sri --type sha256 "$(nix-prefetch-url --type sha256 "https://tests.stockfishchess.org/api/nn/''${new_nnueBig_file}")")"
 
         # sed -i package.nix \
         #     -e "s/${nnueBigFile}/''${new_nnueBig_file}/"
