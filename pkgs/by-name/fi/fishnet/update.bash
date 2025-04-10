@@ -1,6 +1,6 @@
 new_fishnet_version="$(
-    curl --silent "https://api.github.com/repos/$GITHUB_REPOSITORY/releases/latest" | \
-    jq '.tag_name | ltrimstr("v")' --raw-output
+	curl --silent "https://api.github.com/repos/$GITHUB_REPOSITORY/releases/latest" |
+		jq '.tag_name | ltrimstr("v")' --raw-output
 )"
 
 stockfish_revision="$(curl --silent "https://api.github.com/repos/lichess-org/fishnet/contents/Stockfish?ref=v$new_fishnet_version" | jq .sha --raw-output)"
@@ -20,4 +20,4 @@ pfile_content="${pfile_content//"$NNUE_BIG_FILE"/"$new_nnueBig_file"}"
 pfile_content="${pfile_content//"$NNUE_BIG_HASH"/"$new_nnueBig_hash"}"
 pfile_content="${pfile_content//"$NNUE_SMALL_FILE"/"$new_nnueSmall_file"}"
 pfile_content="${pfile_content//"$NNUE_SMALL_HASH"/"$new_nnueSmall_hash"}"
-echo "$pfile_content" > "$PFILE"
+echo "$pfile_content" >"$PFILE"
