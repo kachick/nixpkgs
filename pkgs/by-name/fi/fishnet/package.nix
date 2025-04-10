@@ -9,6 +9,7 @@
   jq,
   ripgrep,
   common-updater-scripts,
+  sd,
 }:
 
 let
@@ -63,6 +64,7 @@ rustPlatform.buildRustPackage (finalAttrs: {
         jq
         ripgrep
         common-updater-scripts
+        sd
       ];
 
       text = ''
@@ -81,9 +83,11 @@ rustPlatform.buildRustPackage (finalAttrs: {
         new_nnueBig_file="nn-''${new_nnueBig_version}.nnue"
         new_nnueBig_hash="$(nix hash to-sri --type sha256 "$(nix-prefetch-url "https://tests.stockfishchess.org/api/nn/''${new_nnueBig_file}")")"
 
-        sed -i package.nix \
-            -e "s/${nnueBigFile}/''${new_nnueBig_file}/"
-            -e "s/${nnueBigHash}/''${new_nnueBig_hash}/"
+        # sed -i package.nix \
+        #     -e "s/${nnueBigFile}/''${new_nnueBig_file}/"
+        #     -e "s/${nnueBigHash}/''${new_nnueBig_hash}/"
+
+        sd --string-mode '''${nnueBigHash}' "''${new_nnueBig_hash}"
 
         # new_nnueSmall_version="$(echo "$stockfish_header" | rg 'EvalFileDefaultNameSmall "nn-(\w+).nnue"' --only-matching --replace '$1')"
 
