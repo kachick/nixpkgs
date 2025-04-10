@@ -68,6 +68,8 @@ rustPlatform.buildRustPackage (finalAttrs: {
       ];
 
       text = ''
+        package_file="$(dirname "$(readlink -f "$0")")/package.nix"
+
         new_fishnet_version="$(
           curl --silent https://api.github.com/repos/${finalAttrs.src.owner}/${finalAttrs.src.repo}/releases/latest | \
             jq '.tag_name | ltrimstr("v")' --raw-output
@@ -87,7 +89,7 @@ rustPlatform.buildRustPackage (finalAttrs: {
         #     -e "s/${nnueBigFile}/''${new_nnueBig_file}/"
         #     -e "s/${nnueBigHash}/''${new_nnueBig_hash}/"
 
-        sd --string-mode '${nnueBigHash}' "''${new_nnueBig_hash}" ./package.nix
+        sd --string-mode '${nnueBigHash}' "''${new_nnueBig_hash}" "$package_file"
 
         # new_nnueSmall_version="$(echo "$stockfish_header" | rg 'EvalFileDefaultNameSmall "nn-(\w+).nnue"' --only-matching --replace '$1')"
 
