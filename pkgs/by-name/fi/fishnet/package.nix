@@ -7,7 +7,6 @@
   writeShellApplication,
   curl,
   jq,
-  ripgrep,
   common-updater-scripts,
 }:
 
@@ -62,7 +61,6 @@ rustPlatform.buildRustPackage (finalAttrs: {
       runtimeInputs = [
         curl
         jq
-        ripgrep
         common-updater-scripts
       ];
 
