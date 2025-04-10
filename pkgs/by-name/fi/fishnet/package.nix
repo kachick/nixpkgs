@@ -82,6 +82,7 @@ rustPlatform.buildRustPackage (finalAttrs: {
 
         sed -i package.nix \
             -e "s/${nnueBigFile}/''${new_nnueBig_file}/"
+            -e "s/${nnueBig.hash}/''${new_nnueBig_hash}/"
 
         # new_nnueSmall_version="$(echo "$stockfish_header" | rg 'EvalFileDefaultNameSmall "nn-(\w+).nnue"' --only-matching --replace '$1')"
 
