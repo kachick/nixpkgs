@@ -9,11 +9,16 @@ stockfish_header="$(curl --silent "https://raw.githubusercontent.com/official-st
 new_nnueBig_version="$(echo "$stockfish_header" | rg 'EvalFileDefaultNameBig "nn-(\w+).nnue"' --only-matching --replace '$1')"
 new_nnueBig_file="nn-${new_nnueBig_version}.nnue"
 new_nnueBig_hash="$(nix hash to-sri --type sha256 "$(nix-prefetch-url --type sha256 "https://tests.stockfishchess.org/api/nn/${new_nnueBig_file}")")"
+new_nnueSmall_version="$(echo "$stockfish_header" | rg 'EvalFileDefaultNameSmall "nn-(\w+).nnue"' --only-matching --replace '$1')"
+new_nnueSmall_file="nn-${new_nnueSmall_version}.nnue"
+new_nnueSmall_hash="$(nix hash to-sri --type sha256 "$(nix-prefetch-url --type sha256 "https://tests.stockfishchess.org/api/nn/${new_nnueSmall_file}")")"
 
 update-source-version "$PNAME" "$new_fishnet_version" --ignore-same-version --print-changes
 
 sd --string-mode "$NNUE_BIG_FILE" "$new_nnueBig_file" "$PFILE"
 sd --string-mode "$NNUE_BIG_HASH" "$new_nnueBig_hash" "$PFILE"
+sd --string-mode "$NNUE_SMALL_FILE" "$new_nnueSmall_file" "$PFILE"
+sd --string-mode "$NNUE_SMALL_HASH" "$new_nnueSmall_hash" "$PFILE"
 
 # new_nnueSmall_version="$(echo "$stockfish_header" | rg 'EvalFileDefaultNameSmall "nn-(\w+).nnue"' --only-matching --replace '$1')"
 

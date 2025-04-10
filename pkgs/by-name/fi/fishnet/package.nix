@@ -74,8 +74,8 @@ rustPlatform.buildRustPackage (finalAttrs: {
         GITHUB_REPOSITORY = "${finalAttrs.src.owner}/${finalAttrs.src.repo}";
         NNUE_BIG_FILE = nnueBigFile;
         NNUE_BIG_HASH = nnueBigHash;
-        NNUE_SMALL_FILE = nnueBigFile;
-        NNUE_SMALL_HASH = nnueBigHash;
+        NNUE_SMALL_FILE = nnueSmallFile;
+        NNUE_SMALL_HASH = nnueSmallHash;
       };
 
       text = builtins.readFile ./update.bash;
