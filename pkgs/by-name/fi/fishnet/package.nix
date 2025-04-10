@@ -9,7 +9,6 @@
   jq,
   ripgrep,
   common-updater-scripts,
-  sd,
 }:
 
 let
@@ -65,7 +64,6 @@ rustPlatform.buildRustPackage (finalAttrs: {
         jq
         ripgrep
         common-updater-scripts
-        sd
       ];
 
       runtimeEnv = {

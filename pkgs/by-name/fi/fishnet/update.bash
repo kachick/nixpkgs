@@ -15,15 +15,9 @@ new_nnueSmall_hash="$(nix hash to-sri --type sha256 "$(nix-prefetch-url --type s
 
 update-source-version "$PNAME" "$new_fishnet_version" --ignore-same-version --print-changes
 
-sd --string-mode "$NNUE_BIG_FILE" "$new_nnueBig_file" "$PFILE"
-sd --string-mode "$NNUE_BIG_HASH" "$new_nnueBig_hash" "$PFILE"
-sd --string-mode "$NNUE_SMALL_FILE" "$new_nnueSmall_file" "$PFILE"
-sd --string-mode "$NNUE_SMALL_HASH" "$new_nnueSmall_hash" "$PFILE"
-
-# new_nnueSmall_version="$(echo "$stockfish_header" | rg 'EvalFileDefaultNameSmall "nn-(\w+).nnue"' --only-matching --replace '$1')"
-
-# update-source-version '${finalAttrs.pname}.passthru.sources.nnueBig' "$new_nnueBig_version" --ignore-same-version --file=pkgs/by-name/fi/${finalAttrs.pname}/nnue.nix --print-changes
-
-# update-source-version '${finalAttrs.pname}.passthru.sources.nnueBig' "$new_nnueBig_version" --ignore-same-version --source-key="sources.nnueBig"
-
-# update-source-version '${finalAttrs.pname}.passthru.sources.nnueSmall' "$new_nnueSmall_version" --ignore-same-version --source-key="sources.nnueSmall"
+pfile_content="$(cat "$PFILE")"
+pfile_content="${pfile_content//"$NNUE_BIG_FILE"/"$new_nnueBig_file"}"
+pfile_content="${pfile_content//"$NNUE_BIG_HASH"/"$new_nnueBig_hash"}"
+pfile_content="${pfile_content//"$NNUE_SMALL_FILE"/"$new_nnueSmall_file"}"
+pfile_content="${pfile_content//"$NNUE_SMALL_HASH"/"$new_nnueSmall_hash"}"
+echo "$pfile_content" > "$PFILE"
