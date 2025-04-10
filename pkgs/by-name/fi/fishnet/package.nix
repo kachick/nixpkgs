@@ -8,7 +8,6 @@
   curl,
   jq,
   ripgrep,
-  # nix-prefetch-url,
   common-updater-scripts,
 }:
 
@@ -62,7 +61,6 @@ rustPlatform.buildRustPackage (finalAttrs: {
         curl
         jq
         ripgrep
-        nix-prefetch-url
         common-updater-scripts
       ];
 
