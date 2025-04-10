@@ -13,6 +13,7 @@
 }:
 
 let
+  pkgFile = builtins.toString ./package.nix;
   # These files can be found in Stockfish/src/evaluate.h
   nnueBigFile = "nn-1111cefa1111.nnue";
   nnueBigHash = "sha256-ERHO+hERa3cWG9SxTatMUPJuWSDHVvSGFZK+Pc1t4XQ=";
@@ -68,7 +69,7 @@ rustPlatform.buildRustPackage (finalAttrs: {
       ];
 
       text = ''
-        package_file="$(dirname "$(readlink -f "$0")")/package.nix"
+        # package_file="$(dirname "$(readlink -f "$0")")/package.nix"
 
         new_fishnet_version="$(
           curl --silent https://api.github.com/repos/${finalAttrs.src.owner}/${finalAttrs.src.repo}/releases/latest | \
@@ -89,7 +90,7 @@ rustPlatform.buildRustPackage (finalAttrs: {
         #     -e "s/${nnueBigFile}/''${new_nnueBig_file}/"
         #     -e "s/${nnueBigHash}/''${new_nnueBig_hash}/"
 
-        sd --string-mode '${nnueBigHash}' "''${new_nnueBig_hash}" "$package_file"
+        sd --string-mode '${nnueBigHash}' "''${new_nnueBig_hash}" '${pkgFile}'
 
         # new_nnueSmall_version="$(echo "$stockfish_header" | rg 'EvalFileDefaultNameSmall "nn-(\w+).nnue"' --only-matching --replace '$1')"
 
