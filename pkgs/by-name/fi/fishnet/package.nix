@@ -73,7 +73,7 @@ rustPlatform.buildRustPackage (finalAttrs: {
             jq '.tag_name | ltrimstr("v")' --raw-output
         )"
 
-        update-source-version "${finalAttrs.pname}" "$new_fishnet_version" --ignore-same-version --source-key="sources.fishnet" --print-changes
+        update-source-version "${finalAttrs.pname}" "$new_fishnet_version" --ignore-same-version --print-changes
 
         stockfish_revision="$(curl --silent "https://api.github.com/repos/lichess-org/fishnet/contents/Stockfish?ref=v$new_fishnet_version" | jq .sha --raw-output)"
 
