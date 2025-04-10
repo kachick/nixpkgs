@@ -14,9 +14,10 @@
 let
   # These files can be found in Stockfish/src/evaluate.h
   nnueBigFile = "nn-1111cefa1111.nnue";
+  nnueBigHash = "sha256-ERHO+hERa3cWG9SxTatMUPJuWSDHVvSGFZK+Pc1t4XQ=";
   nnueBig = fetchurl {
     url = "https://tests.stockfishchess.org/api/nn/${nnueBigFile}";
-    hash = "sha256-ERHO+hERa3cWG9SxTatMUPJuWSDHVvSGFZK+Pc1t4XQ=";
+    hash = nnueBigHash;
   };
   nnueSmallFile = "nn-37f18f62d772.nnue";
   nnueSmall = fetchurl {
