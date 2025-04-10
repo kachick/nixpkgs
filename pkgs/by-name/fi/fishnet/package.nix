@@ -8,7 +8,7 @@
   curl,
   jq,
   ripgrep,
-  nix-prefetch-url,
+  # nix-prefetch-url,
   common-updater-scripts,
 }:
 
