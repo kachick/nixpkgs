@@ -11,7 +11,7 @@ new_small_hash="$(nix hash to-sri --type sha256 "$(nix-prefetch-url --type sha25
 
 update-source-version "$PNAME" "$new_version" --ignore-same-version --print-changes
 
-pkg_body="$(cat "$PKG_FILE")"
+pkg_body="$(<"$PKG_FILE")"
 pkg_body="${pkg_body//"$NNUE_BIG_FILE"/"$new_big_file"}"
 pkg_body="${pkg_body//"$NNUE_BIG_HASH"/"$new_big_hash"}"
 pkg_body="${pkg_body//"$NNUE_SMALL_FILE"/"$new_small_file"}"
