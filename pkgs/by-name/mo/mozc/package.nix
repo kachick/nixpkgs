@@ -44,7 +44,7 @@ buildBazelPackage rec {
   dontAddBazelOpts = true;
   removeRulesCC = false;
 
-  inherit bazel;
+  inherit bazel; # Requires bazel_8, https://github.com/google/mozc/blob/2.31.5712.102/src/.bazeliskrc. So require https://github.com/NixOS/nixpkgs/pull/362414 to be merged first
 
   fetchAttrs = {
     sha256 = "sha256-+N7AhSemcfhq6j0IUeWZ0DyVvr1l5FbAkB+kahTy3pM=";
