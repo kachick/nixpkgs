@@ -71,9 +71,9 @@ buildBazelPackage rec {
     substituteInPlace src/config.bzl \
       --replace-fail "/usr/bin/xdg-open" "${xdg-utils}/bin/xdg-open" \
       --replace-fail "/usr" "$out"
-    substituteInPlace src/WORKSPACE.bazel \
-      --replace-fail "https://www.post.japanpost.jp/zipcode/dl/kogaki/zip/ken_all.zip" "file://${jp-zip-codes}/ken_all.zip" \
-      --replace-fail "https://www.post.japanpost.jp/zipcode/dl/jigyosyo/zip/jigyosyo.zip" "file://${jp-zip-codes}/jigyosyo.zip"
+    substituteInPlace src/MODULE.bazel \
+      --replace-fail 'https://github.com/hiroyuki-komatsu/japanpost_zipcode/raw/refs/heads/main/ken_all.zip' "file://${jp-zip-codes}/ken_all.zip" \
+      --replace-fail 'https://github.com/hiroyuki-komatsu/japanpost_zipcode/raw/refs/heads/main/jigyosyo.zip' "file://${jp-zip-codes}/jigyosyo.zip"
   '';
 
   preConfigure =
