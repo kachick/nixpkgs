@@ -12,6 +12,7 @@
   jp-zip-codes,
   dictionaries ? [ ],
   merge-ut-dictionaries,
+  nix-update-script,
 }:
 
 let
@@ -97,6 +98,8 @@ buildBazelPackage rec {
 
     runHook postInstall
   '';
+
+  passthru.updateScript = nix-update-script { };
 
   meta = with lib; {
     isIbusEngine = true;
