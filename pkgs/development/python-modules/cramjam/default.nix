@@ -46,12 +46,6 @@ buildPythonPackage rec {
     CI = true;
   };
 
-  disabledTests = [
-    # I (@GaetanLepage) cannot reproduce the failure, but it fails consistently on Ofborg with:
-    # SyntaxError: could not convert string to float: 'V' - Consider hexadecimal for huge integer literals to avoid decimal conversion limits.
-    "test_variants_decompress_into"
-  ];
-
   disabledTestPaths = [
     "benchmarks/test_bench.py"
   ];
@@ -59,6 +53,8 @@ buildPythonPackage rec {
   disabledTests = [
     # https://github.com/milesgranger/cramjam/issues/201
     # https://github.com/HypothesisWorks/hypothesis/issues/4267
+    # I (@GaetanLepage) cannot reproduce the failure, but it fails consistently on Ofborg with:
+    # SyntaxError: could not convert string to float: 'V' - Consider hexadecimal for huge integer literals to avoid decimal conversion limits.
     "test_variants_decompress_into"
   ];
 
