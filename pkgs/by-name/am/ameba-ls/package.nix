@@ -14,10 +14,11 @@ crystal.buildCrystalPackage {
     owner = "crystal-lang-tools";
     repo = "ameba-ls";
     rev = "5e52ab9e797829b64c44ed3738c3ee91c7e3f3b8";
-    hash = lib.fakeHash;
+    hash = "sha256-wQcTGs8ifftbAfy+807jnaSSd0tM9s2+GYsIIdAzRdU=";
   };
 
-  format = "make";
+  # format = "make";
+  shardsFile = ./shards.nix;
   # installFlags = [ "INSTALL_BIN=${coreutils}/bin/install" ];
 
   passthru.updateScript = unstableGitUpdater { };
