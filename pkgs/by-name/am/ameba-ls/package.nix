@@ -3,6 +3,7 @@
   fetchFromGitHub,
   crystal,
   unstableGitUpdater,
+  shards,
 # coreutils,
 }:
 
@@ -17,8 +18,19 @@ crystal.buildCrystalPackage {
     hash = "sha256-wQcTGs8ifftbAfy+807jnaSSd0tM9s2+GYsIIdAzRdU=";
   };
 
-  # format = "make";
   shardsFile = ./shards.nix;
+
+  # buildInputs = [
+  #   shards
+  # ];
+
+  buildFlags = [
+    "ameba-ls"
+  ];
+
+  # Don't suppress > make: *** No rule to make target 'build'.  Stop.
+  enableParallelBuilding = false;
+
   # installFlags = [ "INSTALL_BIN=${coreutils}/bin/install" ];
 
   passthru.updateScript = unstableGitUpdater { };
