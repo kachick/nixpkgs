@@ -74,8 +74,8 @@ buildNpmPackage (finalAttrs: {
     mkdir -p "$out/share/lib/shogihome"
     cp -r dist/*-unpacked/{locales,resources{,.pak}} "$out/share/lib/shogihome"
 
-    makeWrapper '${electron}/bin/electron' "$out/bin/shogihome" \
-      --add-flags $out/share/lib/shogihome/resources/app.asar \
+    makeWrapper '${lib.getExe electron}' "$out/bin/shogihome" \
+      --add-flags "$out/share/lib/shogihome/resources/app.asar" \
       --add-flags "\''${NIXOS_OZONE_WL:+\''${WAYLAND_DISPLAY:+--ozone-platform-hint=auto --enable-features=WaylandWindowDecorations --enable-wayland-ime=true}}" \
       --inherit-argv0
 
