@@ -43,6 +43,9 @@ buildNpmPackage (finalAttrs: {
     substituteInPlace package.json \
       --replace-fail 'npm run install:esbuild &&' ' ' \
       --replace-fail 'npm run install:electron &&' ' '
+
+    substituteInPlace ./scripts/build.mjs \
+      --replace-fail 'AppImage' 'dir'
   '';
 
   dontNpmBuild = true;
@@ -68,6 +71,8 @@ buildNpmPackage (finalAttrs: {
 
     ./node_modules/.bin/electron-builder \
         --dir \
+        --linux dir \
+        -c.extraMetadata.main=dist/packed/background.js \
         -c.electronDist=electron-dist \
         -c.electronVersion=${electron.version}
 
