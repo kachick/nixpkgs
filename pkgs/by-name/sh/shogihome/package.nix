@@ -45,12 +45,15 @@ buildNpmPackage (finalAttrs: {
     chmod -R u+w electron-dist
     rm electron-dist/libvulkan.so.1
 
-
-    # export ELECTRON_SKIP_BINARY_DOWNLOAD=1
-    # export npm_config_build_from_source=true
-
-    # npm run build
     ./node_modules/.bin/vite build
+
+    ./node_modules/.bin/tsc --project ./tsconfig.bg.json
+
+    ./node_modules/.bin/tsc-alias
+
+    ./node_modules/.bin/webpack --config-name preload
+
+    ./node_modules/.bin/webpack --config-name background
 
     ./node_modules/.bin/electron-builder \
         --dir \
