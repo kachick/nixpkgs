@@ -33,11 +33,15 @@ buildNpmPackage (finalAttrs: {
 
   makeCacheWritable = true;
 
+  patches = [
+    ./build-files.patch
+  ];
+
   buildPhase = ''
     runHook preBuild
 
-    cp -r ${electron.dist} electron-dist
-    chmod -R u+w electron-dist
+    # cp -r ${electron.dist} electron-dist
+    # chmod -R u+w electron-dist
 
     npm exec electron-builder -- \
         --dir \

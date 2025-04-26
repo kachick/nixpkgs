@@ -1,0 +1,16 @@
+diff --git a/package.json b/package.json
+index 0fa21a29..55a3d053 100644
+--- a/package.json
++++ b/package.json
+@@ -12,6 +12,11 @@
+   "keywords": [
+     "shogi"
+   ],
++  "build": {
++    "files": [
++      "dist/**/*"
++    ]
++  },
+   "bugs": {
+     "url": "https://github.com/sunfish-shogi/shogihome/issues"
+   },
