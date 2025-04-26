@@ -43,7 +43,7 @@ buildNpmPackage (finalAttrs: {
     # cp -r ${electron.dist} electron-dist
     # chmod -R u+w electron-dist
 
-    npm exec electron-builder -- \
+    ./node_modules/.bin/electron-builder \
         --dir \
         -c.electronDist=${electron.dist} \
         -c.electronVersion=${electron.version}
