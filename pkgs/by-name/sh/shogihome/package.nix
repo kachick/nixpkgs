@@ -71,7 +71,11 @@ buildNpmPackage (finalAttrs: {
     # rm -v $out/share/google/$appname/libvulkan.so.1
     # ln -v -s -t "$out/share/google/$appname" "${lib.getLib vulkan-loader}/lib/libvulkan.so.1"
 
+    mkdir -p "$out/share/lib/shogihome"
+    cp -r dist/*-unpacked/{locales,resources{,.pak}} "$out/share/lib/shogihome"
+
     makeWrapper '${electron}/bin/electron' "$out/bin/shogihome" \
+      --add-flags $out/share/lib/shogihome/resources/app.asar \
       --add-flags "\''${NIXOS_OZONE_WL:+\''${WAYLAND_DISPLAY:+--ozone-platform-hint=auto --enable-features=WaylandWindowDecorations --enable-wayland-ime=true}}" \
       --inherit-argv0
 
