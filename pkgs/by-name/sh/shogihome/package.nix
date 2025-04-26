@@ -43,8 +43,11 @@ buildNpmPackage (finalAttrs: {
     # cp -r ${electron.dist} electron-dist
     # chmod -R u+w electron-dist
 
+    npm run electron:portable
+
     ./node_modules/.bin/electron-builder \
         --dir \
+        --config scripts/build.mjs \
         -c.electronDist=${electron.dist} \
         -c.electronVersion=${electron.version}
 
