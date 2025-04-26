@@ -1,0 +1,12 @@
+diff --git a/package.json b/package.json
+index 0fa21a29..41c54e3a 100644
+--- a/package.json
++++ b/package.json
+@@ -64,6 +64,7 @@
+     "proper-lockfile": "^4.1.2",
+     "semver": "^7.7.1",
+     "splitpanes": "^3.2.0",
++    "tslib": "^2.8.1",
+     "tsshogi": "^1.8.0",
+     "vue": "^3.4.34",
+     "yaml": "^2.5.0"

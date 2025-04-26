@@ -35,7 +35,8 @@ buildNpmPackage (finalAttrs: {
   makeCacheWritable = true;
 
   patches = [
-    ./build-files.patch
+    ./package-build-section.patch
+    ./tslib.patch
   ];
 
   postPatch = ''
