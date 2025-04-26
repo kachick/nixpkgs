@@ -4,6 +4,7 @@
   fetchFromGitHub,
   makeWrapper,
   electron_35,
+  vulkan-loader,
   nix-update-script,
 }:
 
@@ -40,15 +41,20 @@ buildNpmPackage (finalAttrs: {
   buildPhase = ''
     runHook preBuild
 
-    # cp -r ${electron.dist} electron-dist
-    # chmod -R u+w electron-dist
+    cp -r ${electron.dist} electron-dist
+    chmod -R u+w electron-dist
+    rm electron-dist/libvulkan.so.1
 
-    npm run electron:portable
+
+    # export ELECTRON_SKIP_BINARY_DOWNLOAD=1
+    # export npm_config_build_from_source=true
+
+    # npm run build
+    ./node_modules/.bin/vite build
 
     ./node_modules/.bin/electron-builder \
         --dir \
-        --config scripts/build.mjs \
-        -c.electronDist=${electron.dist} \
+        -c.electronDist=electron-dist \
         -c.electronVersion=${electron.version}
 
     runHook postBuild
@@ -56,6 +62,11 @@ buildNpmPackage (finalAttrs: {
 
   installPhase = ''
     runHook preInstall
+
+    # https://github.com/NixOS/nixpkgs/pull/346215/files#diff-69d509716271021d88e077d5081f9e1f4098b7f684cfbb7cb5d64aec4cb167a6R218-R220
+    # https://github.com/NixOS/nixpkgs/issues/346197#issuecomment-2392041000
+    # rm -v $out/share/google/$appname/libvulkan.so.1
+    # ln -v -s -t "$out/share/google/$appname" "${lib.getLib vulkan-loader}/lib/libvulkan.so.1"
 
     makeWrapper '${electron}/bin/electron' "$out/bin/shogihome" \
       --add-flags "\''${NIXOS_OZONE_WL:+\''${WAYLAND_DISPLAY:+--ozone-platform-hint=auto --enable-features=WaylandWindowDecorations --enable-wayland-ime=true}}" \
