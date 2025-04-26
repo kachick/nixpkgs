@@ -38,6 +38,12 @@ buildNpmPackage (finalAttrs: {
     ./build-files.patch
   ];
 
+  postPatch = ''
+    substituteInPlace package.json \
+      --replace-fail 'npm run install:esbuild &&' ' ' \
+      --replace-fail 'npm run install:electron &&' ' '
+  '';
+
   dontNpmBuild = true;
 
   buildPhase = ''
@@ -47,15 +53,17 @@ buildNpmPackage (finalAttrs: {
     chmod -R u+w electron-dist
     rm electron-dist/libvulkan.so.1
 
-    ./node_modules/.bin/vite build
+    npm run electron:pack
 
-    ./node_modules/.bin/tsc --project ./tsconfig.bg.json
+    # ./node_modules/.bin/vite build
 
-    ./node_modules/.bin/tsc-alias
+    # ./node_modules/.bin/tsc --project ./tsconfig.bg.json
 
-    ./node_modules/.bin/webpack --config-name preload
+    # ./node_modules/.bin/tsc-alias
 
-    ./node_modules/.bin/webpack --config-name background
+    # ./node_modules/.bin/webpack --config-name preload
+
+    # ./node_modules/.bin/webpack --config-name background
 
     ./node_modules/.bin/electron-builder \
         --dir \
