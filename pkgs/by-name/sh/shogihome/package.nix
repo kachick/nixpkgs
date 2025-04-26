@@ -38,6 +38,8 @@ buildNpmPackage (finalAttrs: {
     ./build-files.patch
   ];
 
+  dontNpmBuild = true;
+
   buildPhase = ''
     runHook preBuild
 
