@@ -30,17 +30,12 @@ buildNpmPackage (finalAttrs: {
 
   patches = [
     ./electron-builder-config.patch
-    # ./package-build-section.patch
-    # ./tslib.patch
   ];
 
   postPatch = ''
     substituteInPlace package.json \
       --replace-fail 'npm run install:esbuild && ' "" \
       --replace-fail 'npm run install:electron && ' ""
-
-    substituteInPlace ./scripts/build.mjs \
-      --replace-fail 'AppImage' 'dir'
   '';
 
   env = {
@@ -57,12 +52,6 @@ buildNpmPackage (finalAttrs: {
 
   dontNpmBuild = true;
 
-  # ./node_modules/.bin/electron-builder \
-  #     --dir \
-  #     --linux dir \
-  #     -c.extraMetadata.main=dist/packed/background.js \
-  #     -c.electronDist=electron-dist \
-  #     -c.electronVersion=${electron.version}
   buildPhase =
     ''
       runHook preBuild
