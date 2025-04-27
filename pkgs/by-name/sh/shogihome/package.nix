@@ -6,6 +6,7 @@
   electron_35,
   # vulkan-loader,
   makeDesktopItem,
+  copyDesktopItems,
   nix-update-script,
 }:
 
@@ -44,7 +45,10 @@ buildNpmPackage (finalAttrs: {
     npm_config_build_from_source = "true";
   };
 
-  nativeBuildInputs = [ makeWrapper ];
+  nativeBuildInputs = [
+    makeWrapper
+    copyDesktopItems
+  ];
 
   makeCacheWritable = true;
 
