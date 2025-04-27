@@ -1,12 +1,14 @@
 {
   lib,
+  stdenv,
   buildNpmPackage,
   fetchFromGitHub,
   makeWrapper,
   electron_35,
-  # vulkan-loader,
+  vulkan-loader,
   makeDesktopItem,
   copyDesktopItems,
+  commandLineArgs ? [ ],
   nix-update-script,
 }:
 
@@ -54,29 +56,31 @@ buildNpmPackage (finalAttrs: {
 
   dontNpmBuild = true;
 
-  buildPhase = ''
-    runHook preBuild
+  buildPhase =
+    ''
+      runHook preBuild
 
-    cp -r ${electron.dist} electron-dist
-    chmod -R u+w electron-dist
-    rm electron-dist/libvulkan.so.1
+      cp -r ${electron.dist} electron-dist
+      chmod -R u+w electron-dist
+    ''
+    # Electron builder complains about symlink in electron-dist
+    + lib.optionalString stdenv.hostPlatform.isLinux ''
+      rm electron-dist/libvulkan.so.1
+      cp ${lib.getLib vulkan-loader}/lib/libvulkan.so.1 electron-dist
+    ''
+    + ''
+      npm run electron:pack
 
-    npm run electron:pack
+      ./node_modules/.bin/electron-builder \
+          --dir \
+          --linux dir \
+          -c.extraMetadata.main=dist/packed/background.js \
+          -c.electronDist=electron-dist \
+          -c.electronVersion=${electron.version}
 
-    ./node_modules/.bin/electron-builder \
-        --dir \
-        --linux dir \
-        -c.extraMetadata.main=dist/packed/background.js \
-        -c.electronDist=electron-dist \
-        -c.electronVersion=${electron.version}
+      runHook postBuild
+    '';
 
-    runHook postBuild
-  '';
-
-  # https://github.com/NixOS/nixpkgs/pull/346215/files#diff-69d509716271021d88e077d5081f9e1f4098b7f684cfbb7cb5d64aec4cb167a6R218-R220
-  # https://github.com/NixOS/nixpkgs/issues/346197#issuecomment-2392041000
-  # rm -v $out/share/google/$appname/libvulkan.so.1
-  # ln -v -s -t "$out/share/google/$appname" "${lib.getLib vulkan-loader}/lib/libvulkan.so.1"
   installPhase = ''
     runHook preInstall
 
@@ -88,6 +92,7 @@ buildNpmPackage (finalAttrs: {
     makeWrapper '${lib.getExe electron}' "$out/bin/shogihome" \
       --add-flags "$out/share/lib/shogihome/resources/app.asar" \
       --add-flags "\''${NIXOS_OZONE_WL:+\''${WAYLAND_DISPLAY:+--ozone-platform-hint=auto --enable-features=WaylandWindowDecorations --enable-wayland-ime=true}}" \
+      --add-flags ${lib.escapeShellArgs commandLineArgs} \
       --inherit-argv0
 
     runHook postInstall
@@ -111,8 +116,8 @@ buildNpmPackage (finalAttrs: {
   };
 
   meta = {
-    description = "Shogi Frontend";
-    homepage = "https://github.com/sunfish-shogi/shogihome";
+    description = "Shogi frontend supporting USI engines";
+    homepage = "https://sunfish-shogi.github.io/shogihome/";
     license = with lib.licenses; [
       mit
       asl20 # for icons
