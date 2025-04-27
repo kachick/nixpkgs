@@ -43,7 +43,7 @@ buildNpmPackage (finalAttrs: {
     npm_config_build_from_source = "true";
   };
 
-  nativeBuildInputs = [
+  nativeBuildInputs = lib.optionals stdenv.hostPlatform.isLinux [
     makeWrapper
     copyDesktopItems
   ];
@@ -76,22 +76,29 @@ buildNpmPackage (finalAttrs: {
       runHook postBuild
     '';
 
-  installPhase = ''
-    runHook preInstall
+  installPhase =
+    ''
+      runHook preInstall
+    ''
+    + lib.optionalString stdenv.hostPlatform.isLinux ''
+      mkdir -p "$out/share/lib/shogihome"
+      cp -r dist/*-unpacked/{locales,resources{,.pak}} "$out/share/lib/shogihome"
 
-    mkdir -p "$out/share/lib/shogihome"
-    cp -r dist/*-unpacked/{locales,resources{,.pak}} "$out/share/lib/shogihome"
+      install -Dm444 'docs/icon.svg' "$out/share/icons/hicolor/scalable/apps/shogihome.svg"
 
-    install -Dm444 'docs/icon.svg' "$out/share/icons/hicolor/scalable/apps/shogihome.svg"
-
-    makeWrapper '${lib.getExe electron}' "$out/bin/shogihome" \
-      --add-flags "$out/share/lib/shogihome/resources/app.asar" \
-      --add-flags "\''${NIXOS_OZONE_WL:+\''${WAYLAND_DISPLAY:+--ozone-platform-hint=auto --enable-features=WaylandWindowDecorations --enable-wayland-ime=true}}" \
-      --add-flags ${lib.escapeShellArgs commandLineArgs} \
-      --inherit-argv0
-
-    runHook postInstall
-  '';
+      makeWrapper '${lib.getExe electron}' "$out/bin/shogihome" \
+        --add-flags "$out/share/lib/shogihome/resources/app.asar" \
+        --add-flags "\''${NIXOS_OZONE_WL:+\''${WAYLAND_DISPLAY:+--ozone-platform-hint=auto --enable-features=WaylandWindowDecorations --enable-wayland-ime=true}}" \
+        --add-flags ${lib.escapeShellArgs commandLineArgs} \
+        --inherit-argv0
+    ''
+    + lib.optionalString stdenv.hostPlatform.isDarwin ''
+      mkdir -p $out/Applications
+      mv dist/mac*/ShogiHome.app $out/Applications
+    ''
+    + ''
+      runHook postInstall
+    '';
 
   desktopItems = [
     (makeDesktopItem {
