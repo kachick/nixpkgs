@@ -5,6 +5,7 @@
   makeWrapper,
   electron_35,
   vulkan-loader,
+  makeDesktopItem,
   nix-update-script,
 }:
 
@@ -90,6 +91,8 @@ buildNpmPackage (finalAttrs: {
     mkdir -p "$out/share/lib/shogihome"
     cp -r dist/*-unpacked/{locales,resources{,.pak}} "$out/share/lib/shogihome"
 
+    install -Dm444 'docs/icon.svg' "$out/share/icons/hicolor/scalable/apps/shogihome.svg"
+
     makeWrapper '${lib.getExe electron}' "$out/bin/shogihome" \
       --add-flags "$out/share/lib/shogihome/resources/app.asar" \
       --add-flags "\''${NIXOS_OZONE_WL:+\''${WAYLAND_DISPLAY:+--ozone-platform-hint=auto --enable-features=WaylandWindowDecorations --enable-wayland-ime=true}}" \
@@ -97,6 +100,19 @@ buildNpmPackage (finalAttrs: {
 
     runHook postInstall
   '';
+
+  desktopItems = [
+    (makeDesktopItem {
+      name = "shogihome";
+      exec = "shogihome %U";
+      icon = "shogihome";
+      desktopName = "ShogiHome";
+      genericName = "Shogi Frontend";
+      comment = finalAttrs.meta.description;
+      categories = [ "Game" ];
+      startupWMClass = "ShogiHome";
+    })
+  ];
 
   # NODE_OPTIONS = "--openssl-legacy-provider";
 
