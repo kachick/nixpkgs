@@ -114,7 +114,11 @@ buildNpmPackage (finalAttrs: {
   ];
 
   passthru = {
-    updateScript = nix-update-script { };
+    updateScript = nix-update-script {
+      extraArgs = [
+        "--version-regex=^v([\\d\\.]+)$"
+      ];
+    };
   };
 
   meta = {
