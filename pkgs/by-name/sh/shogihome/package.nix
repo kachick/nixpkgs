@@ -29,8 +29,9 @@ buildNpmPackage (finalAttrs: {
   npmDepsHash = "sha256-OS5DR+24F98ICgQ6zL4VD231Rd5JB/gJKl+qNfnP3PE=";
 
   patches = [
-    ./package-build-section.patch
-    ./tslib.patch
+    ./electron-builder-config.patch
+    # ./package-build-section.patch
+    # ./tslib.patch
   ];
 
   postPatch = ''
@@ -56,6 +57,12 @@ buildNpmPackage (finalAttrs: {
 
   dontNpmBuild = true;
 
+  # ./node_modules/.bin/electron-builder \
+  #     --dir \
+  #     --linux dir \
+  #     -c.extraMetadata.main=dist/packed/background.js \
+  #     -c.electronDist=electron-dist \
+  #     -c.electronVersion=${electron.version}
   buildPhase =
     ''
       runHook preBuild
@@ -73,8 +80,7 @@ buildNpmPackage (finalAttrs: {
 
       ./node_modules/.bin/electron-builder \
           --dir \
-          --linux dir \
-          -c.extraMetadata.main=dist/packed/background.js \
+          --config scripts/build.mjs \
           -c.electronDist=electron-dist \
           -c.electronVersion=${electron.version}
 
