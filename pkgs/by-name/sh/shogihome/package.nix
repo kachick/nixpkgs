@@ -4,7 +4,7 @@
   fetchFromGitHub,
   makeWrapper,
   electron_35,
-  vulkan-loader,
+  # vulkan-loader,
   makeDesktopItem,
   nix-update-script,
 }:
@@ -12,7 +12,6 @@
 let
   electron = electron_35;
 in
-
 buildNpmPackage (finalAttrs: {
   pname = "shogihome";
   version = "1.22.1";
@@ -26,15 +25,6 @@ buildNpmPackage (finalAttrs: {
 
   npmDepsHash = "sha256-OS5DR+24F98ICgQ6zL4VD231Rd5JB/gJKl+qNfnP3PE=";
 
-  # The prepack script runs the build script, which we'd rather do in the build phase.
-  # npmPackFlags = [ "--ignore-scripts" ];
-
-  env.ELECTRON_SKIP_BINARY_DOWNLOAD = "1";
-  env.npm_config_build_from_source = "true";
-  nativeBuildInputs = [ makeWrapper ];
-
-  makeCacheWritable = true;
-
   patches = [
     ./package-build-section.patch
     ./tslib.patch
@@ -42,12 +32,21 @@ buildNpmPackage (finalAttrs: {
 
   postPatch = ''
     substituteInPlace package.json \
-      --replace-fail 'npm run install:esbuild &&' ' ' \
-      --replace-fail 'npm run install:electron &&' ' '
+      --replace-fail 'npm run install:esbuild && ' "" \
+      --replace-fail 'npm run install:electron && ' ""
 
     substituteInPlace ./scripts/build.mjs \
       --replace-fail 'AppImage' 'dir'
   '';
+
+  env = {
+    ELECTRON_SKIP_BINARY_DOWNLOAD = "1";
+    npm_config_build_from_source = "true";
+  };
+
+  nativeBuildInputs = [ makeWrapper ];
+
+  makeCacheWritable = true;
 
   dontNpmBuild = true;
 
@@ -60,16 +59,6 @@ buildNpmPackage (finalAttrs: {
 
     npm run electron:pack
 
-    # ./node_modules/.bin/vite build
-
-    # ./node_modules/.bin/tsc --project ./tsconfig.bg.json
-
-    # ./node_modules/.bin/tsc-alias
-
-    # ./node_modules/.bin/webpack --config-name preload
-
-    # ./node_modules/.bin/webpack --config-name background
-
     ./node_modules/.bin/electron-builder \
         --dir \
         --linux dir \
@@ -80,13 +69,12 @@ buildNpmPackage (finalAttrs: {
     runHook postBuild
   '';
 
+  # https://github.com/NixOS/nixpkgs/pull/346215/files#diff-69d509716271021d88e077d5081f9e1f4098b7f684cfbb7cb5d64aec4cb167a6R218-R220
+  # https://github.com/NixOS/nixpkgs/issues/346197#issuecomment-2392041000
+  # rm -v $out/share/google/$appname/libvulkan.so.1
+  # ln -v -s -t "$out/share/google/$appname" "${lib.getLib vulkan-loader}/lib/libvulkan.so.1"
   installPhase = ''
     runHook preInstall
-
-    # https://github.com/NixOS/nixpkgs/pull/346215/files#diff-69d509716271021d88e077d5081f9e1f4098b7f684cfbb7cb5d64aec4cb167a6R218-R220
-    # https://github.com/NixOS/nixpkgs/issues/346197#issuecomment-2392041000
-    # rm -v $out/share/google/$appname/libvulkan.so.1
-    # ln -v -s -t "$out/share/google/$appname" "${lib.getLib vulkan-loader}/lib/libvulkan.so.1"
 
     mkdir -p "$out/share/lib/shogihome"
     cp -r dist/*-unpacked/{locales,resources{,.pak}} "$out/share/lib/shogihome"
@@ -113,8 +101,6 @@ buildNpmPackage (finalAttrs: {
       startupWMClass = "ShogiHome";
     })
   ];
-
-  # NODE_OPTIONS = "--openssl-legacy-provider";
 
   passthru = {
     updateScript = nix-update-script { };
