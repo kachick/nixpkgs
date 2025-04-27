@@ -62,7 +62,7 @@ buildNpmPackage (finalAttrs: {
     # Electron builder complains about symlink in electron-dist
     + lib.optionalString stdenv.hostPlatform.isLinux ''
       rm electron-dist/libvulkan.so.1
-      cp ${lib.getLib vulkan-loader}/lib/libvulkan.so.1 electron-dist
+      cp '${lib.getLib vulkan-loader}/lib/libvulkan.so.1' electron-dist
     ''
     + ''
       npm run electron:pack
