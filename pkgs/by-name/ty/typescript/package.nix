@@ -1,6 +1,7 @@
 {
   lib,
   buildNpmPackage,
+  fetchFromGitHub,
   fetchurl,
   versionCheckHook,
   writeShellApplication,
@@ -26,13 +27,29 @@ buildNpmPackage (finalAttrs: {
     hash = "sha256-cuddvrksLm65o0y1nXT6tcLubzKgMkqJQF9hZdWgg3Q=";
   };
 
-  postPatch = ''
-    ln -s '${./package-lock.json}' package-lock.json
-  '';
+  postPatch =
+    let
+      repoSrc = fetchFromGitHub {
+        owner = "microsoft";
+        repo = "TypeScript";
+        tag = "v${finalAttrs.version}";
+        hash = "sha256-/XxjZO/pJLLAvsP7x4TOC+XDbOOR+HHmdpn+8qP77L8=";
+      };
+    in
+    ''
+      ln -s '${repoSrc}/package-lock.json' package-lock.json
+    '';
 
-  npmDepsHash = "sha256-Y/+QPAVOQWKxrHBNEejC3UZrYKQNm7CleR0whFm2sLw=";
+  npmDepsHash = "sha256-/LkIqwuG0px/vbif9mVL9lHpv5KX8SaS7fD+4wiNaIA=";
 
   dontNpmBuild = true;
+
+  makeCacheWritable = true;
+
+  npmFlags = [
+    "--legacy-peer-deps"
+    "--ignore-scripts"
+  ];
 
   nativeInstallCheckInputs = [
     versionCheckHook
