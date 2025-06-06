@@ -22,7 +22,8 @@ stdenvNoCC.mkDerivation (finalAttrs: {
   #   hash = "sha256-hw7UuzesqpmnTjgpfikAIYyY70ni7BxjaUtHAPEdkXI=";
   # };
 
-  # GitHub repository https://github.com/Ludeme/Ludii/ does not have versioned tags.
+  # Preffering official release assets because of GitHub repository does not have versioned tags.
+  # ref: https://github.com/Ludeme/Ludii
   src = fetchurl {
     url = "https://ludii.games/downloads/Ludii-${finalAttrs.version}.jar";
     hash = "sha256-JIqL3oAfNHvDgKSVf9tIAStL3yNKVZHJv3R5kT1zBo4=";
