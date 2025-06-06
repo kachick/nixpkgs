@@ -2,13 +2,11 @@
   lib,
   stdenvNoCC,
   fetchurl,
-  # fetchzip,
-  # fetchFromGitHub,
   jdk,
   jre,
-  # zip,
   makeWrapper,
   makeDesktopItem,
+  copyDesktopItems,
   nix-update-script,
 }:
 
@@ -16,9 +14,9 @@ stdenvNoCC.mkDerivation (finalAttrs: {
   pname = "ludii";
   version = "1.3.14";
 
-  # Preffering official release assets
-  # - GitHub repository does not have versioned tags. ref: https://github.com/Ludeme/Ludii/tags
-  # - ludii.games providing Ludii*-src.jar does not have same structure as GitHub repository. At least, there is no PlayerDesktop/build.xml
+  # Prefer official release assets from ludii.games.
+  # - GitHub repository lacks versioned tags: https://github.com/Ludeme/Ludii/tags
+  # - The Ludii*-src.jar from ludii.games does not contain PlayerDesktop/build.xml
   src = fetchurl {
     url = "https://ludii.games/downloads/Ludii-${finalAttrs.version}.jar";
     hash = "sha256-JIqL3oAfNHvDgKSVf9tIAStL3yNKVZHJv3R5kT1zBo4=";
@@ -27,11 +25,10 @@ stdenvNoCC.mkDerivation (finalAttrs: {
   nativeBuildInputs = [
     jdk
     makeWrapper
+    copyDesktopItems
   ];
 
-  dontUnpack = true;
-
-  postUnpack = ''
+  unpackPhase = ''
     "${jdk}/bin/jar" xf "$src"
   '';
 
@@ -41,7 +38,7 @@ stdenvNoCC.mkDerivation (finalAttrs: {
     mkdir -p "$out/bin"
 
     install -Dm444 "$src" "$out/share/java/Ludii.jar"
-    install -Dm444 ludii-logo-64x64.png "$out/share/icons/hicolor/128x128/apps/ludii.png"
+    install -Dm444 ludii-logo-64x64.png "$out/share/icons/hicolor/64x64/apps/ludii.png"
 
     makeWrapper "${jre}/bin/java" "$out/bin/Ludii" \
       --add-flags "-jar $out/share/java/Ludii.jar"
