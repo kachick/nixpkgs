@@ -2,6 +2,7 @@
   lib,
   stdenvNoCC,
   fetchurl,
+  # fetchzip,
   # fetchFromGitHub,
   jdk,
   jre,
@@ -23,8 +24,8 @@ stdenvNoCC.mkDerivation (finalAttrs: {
 
   # GitHub repository https://github.com/Ludeme/Ludii/ does not have versioned tags.
   src = fetchurl {
-    url = "https://ludii.games/downloads/Ludii-${finalAttrs.version}-src.jar";
-    hash = lib.fakeHash;
+    url = "https://ludii.games/downloads/Ludii-${finalAttrs.version}.jar";
+    hash = "sha256-JIqL3oAfNHvDgKSVf9tIAStL3yNKVZHJv3R5kT1zBo4=";
   };
 
   nativeBuildInputs = [
@@ -40,10 +41,10 @@ stdenvNoCC.mkDerivation (finalAttrs: {
   installPhase = ''
     runHook preInstall
 
-    # mkdir -p $out/share/java
-    # mkdir -p $out/bin
-    install -Dm444 "$src" "$out/share/java/"
-    makeWrapper "${jre}/bin/java" $out/bin/bfg --add-flags "-cp $out/share/java/$jarName com.madgag.git.bfg.cli.Main"
+    mkdir -p "$out/share/java"
+    mkdir -p "$out/bin"
+
+    install -Dm444 "$src" "$out/share/java/Ludii.jar"
 
     makeWrapper "${jre}/bin/java" "$out/bin/Ludii" \
       --add-flags "-jar $out/share/java/Ludii.jar"
@@ -51,15 +52,15 @@ stdenvNoCC.mkDerivation (finalAttrs: {
     runHook postInstall
   '';
 
-  # doInstallCheck = true;
-  # installCheckPhase = ''
-  #   runHook preInstallCheck
+  doInstallCheck = true;
+  installCheckPhase = ''
+    runHook preInstallCheck
 
-  #   "$out/bin/bitsnpicas" convertbitmap -f psf "${spleen}/share/fonts/misc/spleen-8x16.bdf"
-  #   [[ -f Spleen.psf ]]
+    help="$("$out/bin/Ludii" --help)"
+    [[ "$help" == *"Show this help message"* ]]
 
-  #   runHook postInstallCheck
-  # '';
+    runHook postInstallCheck
+  '';
 
   passthru = {
     updateScript = nix-update-script { };
