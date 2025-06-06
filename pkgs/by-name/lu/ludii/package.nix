@@ -68,6 +68,7 @@ stdenvNoCC.mkDerivation (finalAttrs: {
     runHook postInstallCheck
   '';
 
+  # curl --silent https://ludii.games/download.php | rg --only-matching 'downloads\/Ludii-(\S+?)\.jar".+Ludii player' --replace '$1' | head -n 1
   passthru = {
     updateScript = nix-update-script { };
   };
