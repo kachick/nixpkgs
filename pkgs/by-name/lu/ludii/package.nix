@@ -8,6 +8,7 @@
   jre,
   # zip,
   makeWrapper,
+  makeDesktopItem,
   nix-update-script,
 }:
 
@@ -15,15 +16,9 @@ stdenvNoCC.mkDerivation (finalAttrs: {
   pname = "ludii";
   version = "1.3.14";
 
-  # src = fetchFromGitHub {
-  #   owner = "Ludeme";
-  #   repo = "Ludii";
-  #   tag = "v${finalAttrs.version}";
-  #   hash = "sha256-hw7UuzesqpmnTjgpfikAIYyY70ni7BxjaUtHAPEdkXI=";
-  # };
-
-  # Preffering official release assets because of GitHub repository does not have versioned tags.
-  # ref: https://github.com/Ludeme/Ludii
+  # Preffering official release assets
+  # - GitHub repository does not have versioned tags. ref: https://github.com/Ludeme/Ludii/tags
+  # - ludii.games providing Ludii*-src.jar does not have same structure as GitHub repository. At least, there is no PlayerDesktop/build.xml
   src = fetchurl {
     url = "https://ludii.games/downloads/Ludii-${finalAttrs.version}.jar";
     hash = "sha256-JIqL3oAfNHvDgKSVf9tIAStL3yNKVZHJv3R5kT1zBo4=";
@@ -31,27 +26,40 @@ stdenvNoCC.mkDerivation (finalAttrs: {
 
   nativeBuildInputs = [
     jdk
-    # zip
     makeWrapper
   ];
 
-  # sourceRoot = "${finalAttrs.src.name}/main/java/BitsNPicas";
-
   dontUnpack = true;
+
+  postUnpack = ''
+    "${jdk}/bin/jar" xf "$src"
+  '';
 
   installPhase = ''
     runHook preInstall
 
-    mkdir -p "$out/share/java"
     mkdir -p "$out/bin"
 
     install -Dm444 "$src" "$out/share/java/Ludii.jar"
+    install -Dm444 ludii-logo-64x64.png "$out/share/icons/hicolor/128x128/apps/ludii.png"
 
     makeWrapper "${jre}/bin/java" "$out/bin/Ludii" \
       --add-flags "-jar $out/share/java/Ludii.jar"
 
     runHook postInstall
   '';
+
+  desktopItems = [
+    (makeDesktopItem {
+      name = "Ludii";
+      genericName = "Ludii";
+      desktopName = "Ludii";
+      comment = "General game system";
+      icon = "ludii";
+      exec = "Ludii";
+      categories = [ "Game" ];
+    })
+  ];
 
   doInstallCheck = true;
   installCheckPhase = ''
