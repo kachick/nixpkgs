@@ -16,6 +16,7 @@
   useKeytar ? true,
   # command line arguments which are always set
   commandLineArgs ? "",
+  writableTmpDirAsHomeHook,
 }:
 
 let
@@ -58,7 +59,10 @@ stdenv.mkDerivation (
       yarn
       typescript
     ]
-    ++ lib.optionals stdenv.hostPlatform.isDarwin [ desktopToDarwinBundle ];
+    ++ lib.optionals stdenv.hostPlatform.isDarwin [
+      desktopToDarwinBundle
+      writableTmpDirAsHomeHook
+    ];
 
     inherit seshat;
 
