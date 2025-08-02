@@ -6,7 +6,6 @@
   version,
   src,
   hash,
-  writableTmpDirAsHomeHook,
 }:
 stdenvNoCC.mkDerivation {
   pname = "element-desktop-yarn-deps";
@@ -16,7 +15,6 @@ stdenvNoCC.mkDerivation {
     cacert
     yarn
     git
-    writableTmpDirAsHomeHook
   ];
 
   dontInstall = true;
@@ -24,6 +22,7 @@ stdenvNoCC.mkDerivation {
   NODE_EXTRA_CA_CERTS = "${cacert}/etc/ssl/certs/ca-bundle.crt";
 
   buildPhase = ''
+    export HOME=$(mktemp -d)
     export YARN_ENABLE_TELEMETRY=0
 
     yarn install --frozen-lockfile --ignore-platform --skip-integrity-check --ignore-scripts --no-progress --non-interactive
