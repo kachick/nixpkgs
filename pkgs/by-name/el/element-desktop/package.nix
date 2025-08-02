@@ -73,6 +73,8 @@ stdenv.mkDerivation (
       mkdir -p node_modules/
       cp -r $offlineCache/node_modules/* node_modules/
       substituteInPlace package.json --replace-fail "tsx " "node node_modules/tsx/dist/cli.mjs "
+      yarn config set enableGlobalCache false
+      yarn config set cacheFolder $offlineCache
 
       runHook postConfigure
     '';
