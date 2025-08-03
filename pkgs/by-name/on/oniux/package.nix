@@ -2,7 +2,6 @@
   lib,
   rustPlatform,
   fetchFromGitLab,
-  perl,
   nix-update-script,
 }:
 rustPlatform.buildRustPackage (finalAttrs: {
@@ -18,10 +17,6 @@ rustPlatform.buildRustPackage (finalAttrs: {
   };
 
   cargoHash = "sha256-tYHGuBEuwrB/gSCWbSKEavlADIYiNpWjOpVQxYgEC+U=";
-
-  nativeBuildInputs = [
-    perl
-  ];
 
   passthru.updateScript = nix-update-script { };
 
