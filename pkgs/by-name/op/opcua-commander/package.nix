@@ -3,7 +3,6 @@
   stdenv,
   buildNpmPackage,
   fetchFromGitHub,
-  typescript,
   esbuild,
   makeWrapper,
   nodejs,
@@ -22,7 +21,6 @@ buildNpmPackage rec {
   npmDepsHash = "sha256-HB4boWgZWoG+ib+cCoQbUmrrV5rECR3dMwj2lCyJjT0=";
   nativeBuildInputs = [
     esbuild
-    typescript
     makeWrapper
   ];
 
