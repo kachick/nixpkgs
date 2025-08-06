@@ -7,7 +7,6 @@
   nix-update-script,
   nodejs,
   pnpm_9,
-  typescript,
   versionCheckHook,
 }:
 
@@ -28,7 +27,6 @@ let
     nativeBuildInputs = [
       nodejs
       pnpm_9.configHook
-      typescript
     ];
 
     sourceRoot = "${src.name}/web";
