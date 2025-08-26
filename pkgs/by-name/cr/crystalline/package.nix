@@ -87,14 +87,12 @@ crystal.buildCrystalPackage rec {
           (writeShellScript "update-lock" "cd $1; ${lib.getExe crystal2nix}")
           ./.
         ];
-        supportedFeatures = [ "silent" ];
       }
       {
         command = [
           "rm"
           "${builtins.toString ./.}/shard.lock"
         ];
-        supportedFeatures = [ "silent" ];
       }
     ];
     shardLock = runCommand "shard.lock" { inherit src; } ''
