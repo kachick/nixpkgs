@@ -4754,10 +4754,6 @@ with pkgs;
     crystal
     ;
 
-  crystalline = callPackage ../development/tools/language-servers/crystalline {
-    llvmPackages = crystal.llvmPackages;
-  };
-
   devpi-server = python3Packages.callPackage ../development/tools/devpi-server { };
 
   dprint-plugins = recurseIntoAttrs (callPackage ../by-name/dp/dprint/plugins { });
