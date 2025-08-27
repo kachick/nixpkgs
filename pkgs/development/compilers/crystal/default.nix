@@ -301,7 +301,6 @@ rec {
     sha256 = "sha256-cQWK92BfksOW8GmoXn4BmPGJ7CLyLAeKccOffQMh5UU=";
     binary = binaryCrystal_1_10;
     llvmPackages = llvmPackages_18;
-    doCheck = false; # Some compiler spec problems on x86-64_linux with the .0 release
   };
 
   crystal_1_15 = generic {
@@ -309,7 +308,6 @@ rec {
     sha256 = "sha256-L/Q8yZdDq/wn4kJ+zpLfi4pxznAtgjxTCbLnEiCC2K0=";
     binary = binaryCrystal_1_10;
     llvmPackages = llvmPackages_18;
-    doCheck = false;
   };
 
   crystal_1_16 = generic {
@@ -317,7 +315,6 @@ rec {
     sha256 = "sha256-U9H1tHUMyDNicZnXzEccDki5bGXdV0B2Wu2PyCksPVI=";
     binary = binaryCrystal_1_10;
     llvmPackages = llvmPackages_18;
-    doCheck = false;
   };
 
   crystal = crystal_1_16;
