@@ -133,19 +133,11 @@ let
 
         mkdir -p $TMP/crystal
 
-        substituteInPlace spec/std/file_spec.cr \
-          --replace-fail '/bin/ls' '${coreutils}/bin/ls' \
-          --replace-fail '/usr/share' "$TMP/crystal" \
-          --replace-fail '/usr' "$TMP" \
-          --replace-fail '/tmp' "$TMP"
-
         substituteInPlace spec/std/process_spec.cr \
           --replace-fail '/bin/cat' '${coreutils}/bin/cat' \
           --replace-fail '/bin/ls' '${coreutils}/bin/ls' \
           --replace-fail '/usr/bin/env' '${coreutils}/bin/env' \
-          --replace-fail '"env"' '"${coreutils}/bin/env"' \
-          --replace-fail '/usr' "$TMP" \
-          --replace-fail '/tmp' "$TMP"
+          --replace-fail '"env"' '"${coreutils}/bin/env"'
 
         substituteInPlace spec/std/system_spec.cr \
           --replace-fail '`hostname`' '`${hostname}/bin/hostname`'
