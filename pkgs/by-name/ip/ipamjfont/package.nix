@@ -10,7 +10,7 @@
 
 stdenvNoCC.mkDerivation (finalAttrs: {
   pname = "ipamjfont";
-  version = "006.01";
+  version = "003.04";
 
   src =
     let
@@ -18,7 +18,7 @@ stdenvNoCC.mkDerivation (finalAttrs: {
     in
     fetchzip {
       url = "https://dforest.watch.impress.co.jp/library/i/ipamjfont/10750/ipamjm${suffix}.zip";
-      hash = "sha256-Rft8hmxm3D4hOaLaSYDfD14oarDIHUQkMZX+/ZDD4m0=";
+      hash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
       stripRoot = false;
     };
 
