@@ -32,8 +32,8 @@ rustPlatform.buildRustPackage (finalAttrs: {
 
   checkFlags = [
     # Skip Windows tests
-    "--skip=comprehensive_windows_tests"
-    "--skip=windows_vscode_tests"
+    "--skip=comprehensive_windows_tests::test"
+    "--skip=windows_vscode_tests::test"
   ];
 
   doInstallCheck = true;
