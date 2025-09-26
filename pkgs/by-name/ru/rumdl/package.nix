@@ -20,6 +20,10 @@ rustPlatform.buildRustPackage (finalAttrs: {
 
   cargoHash = "sha256-yrDf0+QMBzHhGNBTZp9gQNqH3USagpJklRDrUvjHnbw=";
 
+  cargoBuildFlags = [
+    "--bin=rumdl"
+  ];
+
   useNextest = true;
 
   doInstallCheck = true;
