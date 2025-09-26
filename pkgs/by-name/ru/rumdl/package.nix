@@ -29,7 +29,6 @@ rustPlatform.buildRustPackage (finalAttrs: {
   ];
 
   cargoTestFlags = [
-    # test-ci: https://github.com/rvben/rumdl/blob/da7b027e6bc7161d0752e48724102fd59c93c5f8/Makefile#L101-L102
     "--profile ci"
   ];
 
