@@ -26,9 +26,12 @@ rustPlatform.buildRustPackage (finalAttrs: {
 
   useNextest = true;
 
+  nativeCheckInputs = [
+    writableTmpDirAsHomeHook
+  ];
+
   doInstallCheck = true;
   nativeInstallCheckInputs = [
-    writableTmpDirAsHomeHook
     versionCheckHook
   ];
   versionCheckProgramArg = "--version";
