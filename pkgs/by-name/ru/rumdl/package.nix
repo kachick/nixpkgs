@@ -20,10 +20,6 @@ rustPlatform.buildRustPackage (finalAttrs: {
 
   cargoHash = "sha256-yrDf0+QMBzHhGNBTZp9gQNqH3USagpJklRDrUvjHnbw=";
 
-  nativeBuildInputs = lib.optionals stdenv.hostPlatform.isDarwin [
-    rustPlatform.bindgenHook
-  ];
-
   cargoBuildFlags = [
     "--bin=rumdl"
   ];
@@ -51,6 +47,7 @@ rustPlatform.buildRustPackage (finalAttrs: {
   };
 
   meta = {
+    broken = stdenv.hostPlatform.isDarwin; # LSP tests fail in checkPhase
     description = "Markdown Linter";
     homepage = "https://github.com/rvben/rumdl";
     changelog = "https://github.com/rvben/rumdl/blob/v${finalAttrs.version}/CHANGELOG.md";
