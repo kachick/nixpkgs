@@ -2,6 +2,7 @@
   lib,
   fetchFromGitHub,
   rustPlatform,
+  writableTmpDirAsHomeHook,
   versionCheckHook,
   nix-update-script,
 }:
@@ -19,8 +20,11 @@ rustPlatform.buildRustPackage (finalAttrs: {
 
   cargoHash = "sha256-yrDf0+QMBzHhGNBTZp9gQNqH3USagpJklRDrUvjHnbw=";
 
+  useNextest = true;
+
   doInstallCheck = true;
   nativeInstallCheckInputs = [
+    writableTmpDirAsHomeHook
     versionCheckHook
   ];
   versionCheckProgramArg = "--version";
