@@ -2,7 +2,7 @@
   lib,
   fetchFromGitHub,
   rustPlatform,
-  writableTmpDirAsHomeHook,
+  # writableTmpDirAsHomeHook,
   versionCheckHook,
   nix-update-script,
 }:
@@ -31,15 +31,15 @@ rustPlatform.buildRustPackage (finalAttrs: {
 
   useNextest = true;
 
-  nativeCheckInputs = [
-    writableTmpDirAsHomeHook
-  ];
+  # nativeCheckInputs = [
+  #   writableTmpDirAsHomeHook
+  # ];
 
-  checkFlags = [
-    # Skip Windows tests
-    "--skip comprehensive_windows_tests"
-    "--skip windows_vscode_tests"
-  ];
+  # checkFlags = [
+  #   # Skip Windows tests
+  #   "--skip comprehensive_windows_tests"
+  #   "--skip windows_vscode_tests"
+  # ];
 
   doInstallCheck = true;
   nativeInstallCheckInputs = [
