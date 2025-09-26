@@ -3,7 +3,6 @@
   stdenv,
   fetchFromGitHub,
   rustPlatform,
-  # writableTmpDirAsHomeHook,
   versionCheckHook,
   nix-update-script,
 }:
@@ -35,10 +34,6 @@ rustPlatform.buildRustPackage (finalAttrs: {
   ];
 
   useNextest = true;
-
-  # nativeCheckInputs = [
-  #   writableTmpDirAsHomeHook
-  # ];
 
   checkFlags = [
     # Skip Windows tests
