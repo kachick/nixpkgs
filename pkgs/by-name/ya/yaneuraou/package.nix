@@ -1,7 +1,6 @@
 {
   lib,
   stdenv,
-  llvmPackages_20,
   lld,
   # Available labels: https://github.com/yaneurao/YaneuraOu/blob/59f6265cebbd4f03138091098059a881a021eefa/source/Makefile#L53-L92
   targetLabel ?
@@ -41,7 +40,7 @@
 #   and Makefile, even though the code also builds with g++.
 # - With just stdenv the build fails on macOS, while it works out of the box
 #   with clangStdenv.
-llvmPackages_20.stdenv.mkDerivation (finalAttrs: {
+stdenv.mkDerivation (finalAttrs: {
   pname = "yaneuraou";
   version = "9.00";
 
@@ -64,7 +63,7 @@ llvmPackages_20.stdenv.mkDerivation (finalAttrs: {
   buildFlags = [
     "TARGET_CPU=${targetLabel}"
     "YANEURAOU_EDITION=YANEURAOU_ENGINE_NNUE"
-    "COMPILER=clang++"
+    "COMPILER=g++"
     "OBJDIR=$NIX_BUILD_TOP/obj"
   ];
 
@@ -119,5 +118,6 @@ llvmPackages_20.stdenv.mkDerivation (finalAttrs: {
     ];
     mainProgram = "YaneuraOu";
     platforms = lib.platforms.unix ++ lib.platforms.windows;
+    broken = stdenv.hostPlatform.isDarwin;
   };
 })
