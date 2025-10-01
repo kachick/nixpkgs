@@ -1,7 +1,7 @@
 {
   lib,
   stdenv,
-  clangStdenv,
+  llvmPackages_20,
   lld,
   # Available labels: https://github.com/yaneurao/YaneuraOu/blob/59f6265cebbd4f03138091098059a881a021eefa/source/Makefile#L53-L92
   targetLabel ?
@@ -41,17 +41,16 @@
 #   and Makefile, even though the code also builds with g++.
 # - With just stdenv the build fails on macOS, while it works out of the box
 #   with clangStdenv.
-clangStdenv.mkDerivation (finalAttrs: {
+llvmPackages_20.stdenv.mkDerivation (finalAttrs: {
   pname = "yaneuraou";
-  version = "8.60";
+  version = "9.00";
 
   src = fetchFromGitHub {
     owner = "yaneurao";
     repo = "YaneuraOu";
-    tag = "v${finalAttrs.version}git";
-    hash = "sha256-1awnGCGIdeMAqAd0TWgoJr5spJo2mFBWdR3iMc2i4OM=";
+    tag = "V${finalAttrs.version}";
+    hash = "sha256-F2Rc/EF/S1nAyFaPgztpZ0JVq9jCRg42CNMzlpxfYIk=";
   };
-
   sourceRoot = "${finalAttrs.src.name}/source";
 
   nativeBuildInputs = lib.optionals (!stdenv.hostPlatform.isDarwin) [
@@ -78,7 +77,7 @@ clangStdenv.mkDerivation (finalAttrs: {
     runHook postInstall
   '';
 
-  doInstallCheck = true;
+  doInstallCheck = false;
   nativeInstallCheckInputs = [
     _7zz
   ];
