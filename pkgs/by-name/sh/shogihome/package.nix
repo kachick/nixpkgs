@@ -103,8 +103,10 @@ buildNpmPackage (finalAttrs: {
       --inherit-argv0
   ''
   + lib.optionalString stdenv.hostPlatform.isDarwin ''
-    mkdir -p "$out/Applications"
+    mkdir -p "$out/Applications" "$out/bin" "$out/share"
     mv dist/mac*/ShogiHome.app "$out/Applications"
+    ln -s "$out/Applications/ShogiHome.app/Contents/MacOS/ShogiHome" "$out/bin/shogihome"
+    ln -s "$out/Applications/ShogiHome.app/Contents/Resources" "$out/share/resources"
   ''
   + ''
     runHook postInstall
