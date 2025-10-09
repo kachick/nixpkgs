@@ -56,6 +56,5 @@ rustPlatform.buildRustPackage (finalAttrs: {
     ];
     mainProgram = "rumdl";
     platforms = with lib.platforms; unix ++ windows;
-    broken = stdenv.hostPlatform.isDarwin; # LSP tests fail in checkPhase
   };
 })
