@@ -24,6 +24,8 @@ rustPlatform.buildRustPackage (finalAttrs: {
     "--bin=rumdl"
   ];
 
+  __darwinAllowLocalNetworking = true; # required for LSP tests
+
   useNextest = true;
 
   cargoTestFlags = [
