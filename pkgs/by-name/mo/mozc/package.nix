@@ -20,13 +20,13 @@ let
 in
 buildBazelPackage rec {
   pname = "mozc";
-  version = "2.30.5544.102"; # make sure to update protobuf if needed
+  version = "2.31.5851.102"; # make sure to update protobuf if needed
 
   src = fetchFromGitHub {
     owner = "google";
     repo = "mozc";
     tag = version;
-    hash = "sha256-w0bjoMmq8gL7DSehEG7cKqp5e4kNOXnCYLW31Zl9FRs=";
+    hash = "sha256-lSL8NGmOWdhxZAN0L5a7qcZ9F1dVdfUA49MFRGbDpMg=";
     fetchSubmodules = true;
   };
 
