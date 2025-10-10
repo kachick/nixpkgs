@@ -1,11 +1,11 @@
 {
   lib,
-  buildBazelPackage,
+  bazelPackage,
   fetchFromGitHub,
   qt6,
   pkg-config,
-  protobuf_27,
-  bazel_7,
+  protobuf_29,
+  bazel_8,
   ibus,
   unzip,
   xdg-utils,
@@ -16,9 +16,10 @@
 }:
 
 let
+  # bazelPackage = callPackage ./build-support/bazelPackage.nix { };
   ut-dictionary = merge-ut-dictionaries.override { inherit dictionaries; };
 in
-buildBazelPackage rec {
+bazelPackage rec {
   pname = "mozc";
   version = "2.31.5851.102"; # make sure to update protobuf if needed
 
@@ -44,7 +45,7 @@ buildBazelPackage rec {
   dontAddBazelOpts = true;
   removeRulesCC = false;
 
-  bazel = bazel_7;
+  bazel = bazel_8;
 
   fetchAttrs = {
     hash = "sha256-c+v2vWvTmwJ7MFh3VJlUh+iSINjsX66W9K0UBX5K/1s=";
@@ -71,13 +72,13 @@ buildBazelPackage rec {
   postPatch = ''
     # replace protobuf with our own
     rm -r src/third_party/protobuf
-    cp -r ${protobuf_27.src} src/third_party/protobuf
+    cp -r ${protobuf_29.src} src/third_party/protobuf
     substituteInPlace src/config.bzl \
       --replace-fail "/usr/bin/xdg-open" "${xdg-utils}/bin/xdg-open" \
       --replace-fail "/usr" "$out"
-    substituteInPlace src/WORKSPACE.bazel \
-      --replace-fail "https://www.post.japanpost.jp/zipcode/dl/kogaki/zip/ken_all.zip" "file://${jp-zip-codes}/ken_all.zip" \
-      --replace-fail "https://www.post.japanpost.jp/zipcode/dl/jigyosyo/zip/jigyosyo.zip" "file://${jp-zip-codes}/jigyosyo.zip"
+    substituteInPlace src/MODULE.bazel \
+      --replace-fail "https://github.com/hiroyuki-komatsu/japanpost_zipcode/raw/33524763837473258e7ba2f14b17fc3a70519831/ken_all.zip" "file://${jp-zip-codes}/ken_all.zip" \
+      --replace-fail "https://github.com/hiroyuki-komatsu/japanpost_zipcode/raw/33524763837473258e7ba2f14b17fc3a70519831/jigyosyo.zip" "file://${jp-zip-codes}/jigyosyo.zip"
   '';
 
   preConfigure = ''
