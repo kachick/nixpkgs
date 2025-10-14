@@ -230,6 +230,7 @@ let
       DAMON_DBGFS = whenBetween "5.15" "6.9" yes;
       DAMON_RECLAIM = whenAtLeast "5.16" yes;
       DAMON_LRU_SORT = whenAtLeast "6.0" yes;
+      DAMON_STAT = whenAtLeast "6.17" yes;
       # Support recovering from memory failures on systems with ECC and MCA recovery.
       MEMORY_FAILURE = yes;
 
@@ -904,6 +905,7 @@ let
       # Enable staging drivers.  These are somewhat experimental, but
       # they generally don't hurt.
       STAGING = yes;
+      STAGING_MEDIA = yes;
     };
 
     proc-events = {
@@ -1307,8 +1309,13 @@ let
         HOTPLUG_PCI_PCIE = yes; # PCI-Expresscard hotplug support
 
         # Enable AMD's ROCm GPU compute stack
-        HSA_AMD = lib.mkIf stdenv.hostPlatform.is64bit (yes);
-        ZONE_DEVICE = lib.mkIf stdenv.hostPlatform.is64bit (yes);
+        HSA_AMD = lib.mkIf stdenv.hostPlatform.is64bit yes;
+        # required for P2P DMABUF
+        DMABUF_MOVE_NOTIFY = lib.mkIf stdenv.hostPlatform.is64bit (whenAtLeast "6.6" yes);
+        # required for P2P transfers between accelerators
+        HSA_AMD_P2P = lib.mkIf stdenv.hostPlatform.is64bit (whenAtLeast "6.6" yes);
+
+        ZONE_DEVICE = lib.mkIf stdenv.hostPlatform.is64bit yes;
         HMM_MIRROR = yes;
         DRM_AMDGPU_USERPTR = yes;
 
@@ -1474,6 +1481,9 @@ let
         # Enable AMD Wi-Fi RF band mitigations
         # See https://cateee.net/lkddb/web-lkddb/AMD_WBRF.html
         AMD_WBRF = whenAtLeast "6.8" yes;
+
+        # Enable AMD heterogeneous core hardware feedback interface
+        AMD_HFI = whenAtLeast "6.17" yes;
 
         # Enable Intel Turbo Boost Max 3.0
         INTEL_TURBO_MAX_3 = yes;

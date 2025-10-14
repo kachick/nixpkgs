@@ -29,18 +29,21 @@
 
 buildPythonPackage rec {
   pname = "textual";
-  version = "6.2.0";
+  version = "6.3.0";
   pyproject = true;
 
   src = fetchFromGitHub {
     owner = "Textualize";
     repo = "textual";
     tag = "v${version}";
-    hash = "sha256-XvuKwQwaNwgwKScgHNQyxkPXzDQtOA690Dt+VndmZ6o=";
+    hash = "sha256-3KxSuyfczyulbpysAO8mF7wvzd+807Lj6l6g0TygBnI=";
   };
 
   build-system = [ poetry-core ];
 
+  pythonRelaxDeps = [
+    "rich"
+  ];
   dependencies = [
     markdown-it-py
     platformdirs
