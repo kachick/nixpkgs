@@ -9,16 +9,17 @@
   gpgme,
   gtk3,
   stdenv,
+  versionCheckHook,
 }:
 
-rustPlatform.buildRustPackage rec {
+rustPlatform.buildRustPackage (finalAttrs: {
   pname = "prs";
   version = "0.5.2";
 
   src = fetchFromGitLab {
     owner = "timvisee";
     repo = "prs";
-    rev = "refs/tags/v${version}";
+    tag = "v${finalAttrs.version}";
     hash = "sha256-W5wNmZWjSsM6Xe50fCpa/aGsJ8PDyh2INs1Oj86et04=";
   };
 
@@ -48,10 +49,16 @@ rustPlatform.buildRustPackage rec {
     done
   '';
 
+  nativeInstallCheckInputs = [
+    versionCheckHook
+  ];
+  doInstallCheck = true;
+  versionCheckProgramArg = "--version";
+
   meta = {
     description = "Secure, fast & convenient password manager CLI using GPG and git to sync";
     homepage = "https://gitlab.com/timvisee/prs";
-    changelog = "https://gitlab.com/timvisee/prs/-/blob/v${version}/CHANGELOG.md";
+    changelog = "https://gitlab.com/timvisee/prs/-/blob/v${finalAttrs.version}/CHANGELOG.md";
     license = with lib.licenses; [
       lgpl3Only # lib
       gpl3Only # everything else
@@ -59,4 +66,4 @@ rustPlatform.buildRustPackage rec {
     maintainers = with lib.maintainers; [ colemickens ];
     mainProgram = "prs";
   };
-}
+})
