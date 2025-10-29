@@ -30,6 +30,10 @@ rustPlatform.buildRustPackage {
 
   useNextest = true;
 
+  cargoTestFlags = [
+    "--profile coverage"
+  ];
+
   checkFlags = [
     # Tests with git fail
     "--skip e2e_tests::test_git_boost_config"
