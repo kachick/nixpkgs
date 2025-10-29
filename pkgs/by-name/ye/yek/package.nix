@@ -28,11 +28,17 @@ rustPlatform.buildRustPackage {
 
   env.OPENSSL_NO_VENDOR = 1;
 
-  # Tests using git fail
-  # Skipping individual checks causes failure as `--skip` flags
-  # end up passed to executable
-  # > error: unexpected argument '--skip' found
-  doCheck = false;
+  useNextest = true;
+
+  checkFlags = [
+    # Tests with git fail
+    "--skip e2e_tests::test_git_boost_config"
+    "--skip e2e_tests::test_git_integration"
+    "--skip lib_tests::test_serialize_repo_with_git"
+    "--skip priority_tests::test_get_recent_commit_times_empty_repo"
+    "--skip priority_tests::test_get_recent_commit_times_with_git"
+    "--skip priority_tests::test_get_recent_commit_times_git_failure"
+  ];
 
   nativeInstallCheckInputs = [ versionCheckHook ];
   versionCheckProgramArg = "--version";
