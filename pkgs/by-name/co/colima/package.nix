@@ -5,7 +5,7 @@
   buildGoModule,
   fetchFromGitHub,
   installShellFiles,
-  lima,
+  lima-full,
   makeWrapper,
   qemu,
   testers,
@@ -53,9 +53,7 @@ buildGoModule rec {
       --prefix PATH : ${
         lib.makeBinPath [
           # Suppress warning on `colima start`: https://github.com/abiosoft/colima/issues/1333
-          (lima.override {
-            withAdditionalGuestAgents = true;
-          })
+          lima-full
           qemu
         ]
       }
