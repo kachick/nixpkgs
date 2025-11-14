@@ -4,7 +4,7 @@
   fetchFromGitHub,
   pkg-config,
   dbus,
-  ffmpeg,
+  ffmpeg_7,
   oniguruma,
   openssl,
   sqlite,
@@ -42,7 +42,7 @@ rustPlatform.buildRustPackage rec {
 
   buildInputs = [
     dbus
-    ffmpeg
+    ffmpeg_7
     oniguruma
     openssl
     sqlite
