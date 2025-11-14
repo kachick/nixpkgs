@@ -19,6 +19,8 @@ buildGoModule rec {
     go mod init github.com/twitchtv/twirp
   '';
 
+  proxyVendor = true;
+
   vendorHash = null;
 
   subPackages = [
