@@ -23,6 +23,10 @@ rustPlatform.buildRustPackage rec {
     hash = "sha256-rWKRCqWFuPO84C52mMrrS4euD6XdJU8kqZsAz28+vWE=";
   };
 
+  cargoPatches = [
+    ./bump-ffmpeg-next.patch
+  ];
+
   cargoLock = {
     lockFile = ./Cargo.lock;
     outputHashes = {

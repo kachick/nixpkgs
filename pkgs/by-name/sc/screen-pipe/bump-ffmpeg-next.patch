@@ -1,0 +1,13 @@
+diff --git a/screenpipe-server/Cargo.toml b/screenpipe-server/Cargo.toml
+index a3f2e1dc..7a1a2d69 100644
+--- a/screenpipe-server/Cargo.toml
++++ b/screenpipe-server/Cargo.toml
+@@ -35,7 +35,7 @@ chrono = { version = "0.4.31", features = ["serde"] }
+ sqlx = { version = "0.7", features = ["sqlite", "runtime-tokio-native-tls", "chrono", "migrate"] }
+ 
+ # FFmpeg bindings
+-ffmpeg-next = "7.0.2"
++ffmpeg-next = "7.1.0"
+ 
+ # Local Embeddings + STT
+ candle = { workspace = true }
