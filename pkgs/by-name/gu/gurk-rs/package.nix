@@ -15,20 +15,23 @@
 
 rustPlatform.buildRustPackage rec {
   pname = "gurk-rs";
-  version = "0.6.4";
+  version = "0.7.2";
 
   src = fetchFromGitHub {
-    owner = "boxdot";
+    # It appears nixpkgs's version updates has stopped until https://github.com/whisperfish/presage/compare/473c70d...2acc5328a
+    # I suspect nixpkgs does not correctly handle the difference editions 2021(presage) and 2024(presage-store-sqlite, gurk-rs).
+    # This is my personal and temporary for avoiding the problem.
+    owner = "kachick";
     repo = "gurk-rs";
-    tag = "v${version}";
-    hash = "sha256-1vnyzKissOciLopWzWN2kmraFevYW/w32KVmP8qgUM4=";
+    rev = "2fd0c840ca6e201d42c3d2bae5a53ee55118109b";
+    hash = "sha256-lQIj8w6FhEHIzWgNpXNOF/qzlE6orJpUlMZh0lsLi2w=";
   };
 
   postPatch = ''
     rm .cargo/config.toml
   '';
 
-  cargoHash = "sha256-PCeiJYeIeMgKoQYiDI6DPwNgJcSxw4gw6Ra1YmqsNys=";
+  cargoHash = "sha256-mQPRnK87ZgIJCALs8XVf6zQEoOM5RZVe0CigPmwdG4w=";
 
   nativeBuildInputs = [
     protobuf
@@ -57,7 +60,7 @@ rustPlatform.buildRustPackage rec {
   versionCheckProgram = "${placeholder "out"}/bin/${meta.mainProgram}";
   versionCheckProgramArg = "--version";
 
-  passthru.updateScript = nix-update-script { };
+  passthru.updateScript = nix-update-script { extraArgs = [ "--version=skip" ]; };
 
   meta = with lib; {
     description = "Signal Messenger client for terminal";
