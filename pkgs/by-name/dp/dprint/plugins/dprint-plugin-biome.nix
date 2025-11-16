@@ -1,5 +1,5 @@
 { mkDprintPlugin }:
-mkDprintPlugin {
+mkDprintPlugin rec {
   description = "Biome (JS/TS) wrapper plugin";
   hash = "sha256-WEabcffl/sARrVc00Qr6QdEjFG4BZgHRrk3eeEfFV4g=";
   initConfig = {
@@ -18,4 +18,5 @@ mkDprintPlugin {
   updateUrl = "https://plugins.dprint.dev/dprint/biome/latest.json";
   url = "https://plugins.dprint.dev/biome-0.11.3.wasm";
   version = "0.11.3";
+  changelog = "https://github.com/dprint/dprint-plugin-biome/releases/tag/${version}";
 }

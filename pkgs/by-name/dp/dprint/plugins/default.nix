@@ -17,13 +17,19 @@ let
       updateUrl,
       license ? lib.licenses.mit,
       maintainers ? [ lib.maintainers.phanirithvij ],
+      changelog,
     }:
     stdenv.mkDerivation (finalAttrs: {
       inherit pname version;
       src = fetchurl { inherit url hash; };
       dontUnpack = true;
       meta = {
-        inherit description license maintainers;
+        inherit
+          description
+          license
+          maintainers
+          changelog
+          ;
       };
       /*
         in the dprint configuration
