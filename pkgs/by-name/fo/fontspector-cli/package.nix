@@ -21,10 +21,10 @@ rustPlatform.buildRustPackage (finalAttrs: {
     owner = "fonttools";
     repo = "fontspector";
     tag = "fontspector-v${finalAttrs.version}";
-    hash = "sha256-pBiMJ+S23J5W+nldW6WpqnvkODcQsEwM2IzDhe6TUlM=";
+    hash = "sha256-iRNyOQcfvK48psfleGZCq0rkLocA46I7lJyfNuxbOno=";
   };
 
-  cargoHash = "sha256-zY4PtuQuUMvuR7gr42iytR2CW7bQBfbB0L6JE8cSQh8=";
+  cargoHash = "sha256-aXjUgXcg4fHkDHdzcgqH7E4GuZWQw6mn0WNj3ydJ+kw=";
 
   nativeInstallCheckInputs = [
     versionCheckHook
