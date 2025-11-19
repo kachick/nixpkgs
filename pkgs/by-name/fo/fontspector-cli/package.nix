@@ -3,6 +3,8 @@
   # fetchCrate,
   fetchFromGitHub,
   rustPlatform,
+  pkg-config,
+  openssl,
   versionCheckHook,
   nix-update-script,
 }:
@@ -26,6 +28,20 @@ rustPlatform.buildRustPackage (finalAttrs: {
 
   cargoHash = "sha256-9jewRzUtTKnIMnoV8mWUZJXsf9RvHoov+89g0SwUc9M=";
 
+  nativeBuildInputs = [
+    pkg-config
+  ];
+
+  buildInputs = [
+    openssl
+  ];
+
+  cargoBuildFlags = [
+    "--package=fontspector-cli"
+  ];
+
+  doCheck = false;
+
   nativeInstallCheckInputs = [
     versionCheckHook
   ];
@@ -47,5 +63,6 @@ rustPlatform.buildRustPackage (finalAttrs: {
       kachick
     ];
     mainProgram = "fontspector-cli";
+    platforms = with lib.platforms; unix ++ windows;
   };
 })
