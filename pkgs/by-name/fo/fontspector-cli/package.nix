@@ -34,7 +34,7 @@ rustPlatform.buildRustPackage (finalAttrs: {
 
   passthru = {
     updateScript = nix-update-script {
-      extraArgs = [ "--version=skip" ];
+      extraArgs = [ "--version-regex=^fontspector-v([0-9.]+)$" ];
     };
   };
 
