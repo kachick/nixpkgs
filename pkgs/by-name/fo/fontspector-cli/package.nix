@@ -9,7 +9,7 @@
 
 rustPlatform.buildRustPackage (finalAttrs: {
   pname = "fontspector-cli";
-  version = "1.5.0";
+  version = "1.5.1";
 
   # src = fetchCrate {
   #   pname = "fontspector";
@@ -21,10 +21,10 @@ rustPlatform.buildRustPackage (finalAttrs: {
     owner = "fonttools";
     repo = "fontspector";
     tag = "fontspector-v${finalAttrs.version}";
-    hash = "sha256-iRNyOQcfvK48psfleGZCq0rkLocA46I7lJyfNuxbOno=";
+    hash = "sha256-kkedKDhCXMPWd8l3VpkNBCR6DpudK7RwUlXczExFxhk=";
   };
 
-  cargoHash = "sha256-aXjUgXcg4fHkDHdzcgqH7E4GuZWQw6mn0WNj3ydJ+kw=";
+  cargoHash = "sha256-9jewRzUtTKnIMnoV8mWUZJXsf9RvHoov+89g0SwUc9M=";
 
   nativeInstallCheckInputs = [
     versionCheckHook
