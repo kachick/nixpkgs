@@ -28,6 +28,13 @@ rustPlatform.buildRustPackage (finalAttrs: {
 
   cargoHash = "sha256-9jewRzUtTKnIMnoV8mWUZJXsf9RvHoov+89g0SwUc9M=";
 
+  # minreq::get appears not supporting local files.
+  postPatch = ''
+    substituteInPlace ./fontspector-checkapi/build.rs \
+      --replace-fail '"https://learn.microsoft.com/en-gb/typography/opentype/spec/scripttags"' '"file:${./scripttags.html}"' \
+      --replace-fail '"https://learn.microsoft.com/en-gb/typography/opentype/spec/languagetags"' '"file:${./languagetags.html}"'
+  '';
+
   nativeBuildInputs = [
     pkg-config
   ];
@@ -36,9 +43,9 @@ rustPlatform.buildRustPackage (finalAttrs: {
     openssl
   ];
 
-  cargoBuildFlags = [
-    "--package=fontspector-cli"
-  ];
+  # cargoBuildFlags = [
+  #   "--package=fontspector-cli"
+  # ];
 
   doCheck = false;
 
