@@ -1,20 +1,20 @@
 {
   lib,
   fetchFromGitHub,
-  buildGo124Module,
+  buildGoModule,
   testers,
   boulder,
   nix-update-script,
 }:
 
-buildGo124Module rec {
+buildGoModule rec {
   pname = "boulder";
   version = "2025-04-17";
 
   src = fetchFromGitHub {
     owner = "letsencrypt";
     repo = "boulder";
-    tag = "release-${version}";
+    tag = "v${version}";
     leaveDotGit = true;
     postFetch = ''
       pushd $out
@@ -324,7 +324,7 @@ buildGo124Module rec {
       package = boulder;
       inherit version;
     };
-    updateScript = nix-update-script { };
+    updateScript = nix-update-script { extraArgs = [ "--version-regex=v([0-9.]+)$" ]; };
   };
 
   meta = {
