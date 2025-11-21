@@ -1,13 +1,13 @@
 {
   lib,
   fetchFromGitHub,
-  buildGoModule,
+  buildGo124Module,
   testers,
   boulder,
   nix-update-script,
 }:
 
-buildGoModule rec {
+buildGo124Module rec {
   pname = "boulder";
   version = "2025-04-17";
 
