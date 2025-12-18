@@ -13,16 +13,16 @@ let
 in
 buildGoModule (finalAttrs: {
   pname = "pinact";
-  version = "3.4.5";
+  version = "3.6.0";
 
   src = fetchFromGitHub {
     owner = "suzuki-shunsuke";
     repo = "pinact";
     tag = "v${finalAttrs.version}";
-    hash = "sha256-YupEKk8s8NMKcj3TjKYt1/bPpHEA1UGSjbeX4wd+f7U=";
+    hash = "sha256-Qf9B0Y1hO8kc5hbQjwhq0EYJ7pgQve0GG0wQJZM2zs0=";
   };
 
-  vendorHash = "sha256-00ohijhFWTKYpzApSeMXNsE1xigz9MgMR5fvMUDUGNs=";
+  vendorHash = "sha256-jxHIlQriPU28iGdKc+L1BheOQry0y1v7Gz31ZPMnk4Y=";
 
   env.CGO_ENABLED = 0;
 
