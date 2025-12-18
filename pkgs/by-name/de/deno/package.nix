@@ -45,6 +45,11 @@ let
       "-s"
       "-w"
     ];
+
+    meta = {
+      license = lib.licenses.mit;
+      mainProgram = "esbuild";
+    };
   });
 in
 rustPlatform.buildRustPackage (finalAttrs: {
