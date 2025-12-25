@@ -39,7 +39,8 @@ buildNpmPackage (finalAttrs: {
       --replace-fail 'npm run install:electron && ' ""
 
     substituteInPlace .electron-builder.config.mjs \
-      --replace-fail 'AppImage' 'dir'
+      --replace-fail 'AppImage' 'dir' \
+      --replace-fail 'await signMacApp' '// await signMacApp'
   ''
   # Workaround for https://github.com/electron/electron/issues/31121
   + lib.optionalString stdenv.hostPlatform.isLinux ''
