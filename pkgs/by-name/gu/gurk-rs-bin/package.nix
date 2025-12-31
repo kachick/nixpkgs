@@ -10,7 +10,7 @@
 }:
 
 let
-  version = "0.7.1";
+  version = "0.8.0";
   repo = "boxdot/gurk-rs";
   # See https://github.com/boxdot/gurk-rs/releases for latest
   # Musl versions are now a static-linked binary, so it works on NixOS out of the box.
@@ -18,22 +18,22 @@ let
   sources = {
     x86_64-linux = fetchzip {
       url = "https://github.com/${repo}/releases/download/v${version}/gurk-x86_64-unknown-linux-musl.tar.gz";
-      hash = "sha256-AuMmE97CexJoD7uKTSgwjbOC2mS6bsacZxXmB8xQEsg=";
+      hash = "sha256-mhkRc3WHZQ1xDABkmyeSpSC+A+fdkDcXwnqZP1WzYEM=";
     };
 
     aarch64-linux = fetchzip {
       url = "https://github.com/${repo}/releases/download/v${version}/gurk-aarch64-unknown-linux-musl.tar.gz";
-      hash = "sha256-47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=";
+      hash = "sha256-G4shvX1QCVGuANr8o15hZkpkcUU/+uQwEnmenpwWDTc=";
     };
 
     x86_64-darwin = fetchzip {
       url = "https://github.com/${repo}/releases/download/v${version}/gurk-x86_64-apple-darwin.tar.gz";
-      hash = "sha256-Js+m2A2ZRDAb08NUualcRDUqGN8rYWvJequ0lxOvAyo=";
+      hash = "sha256-/mVsbVAQwGOmPLu/zISI33kcjIOLfVpYeij80DbXAPc=";
     };
 
     aarch64-darwin = fetchzip {
       url = "https://github.com/${repo}/releases/download/v${version}/gurk-aarch64-apple-darwin.tar.gz";
-      hash = "sha256-gFpRRGeJitctNhzr9EOJhzakyTrjkvmd8xT/dCE81ao=";
+      hash = "sha256-VhJFBg4yviCGldeWU68DwUUCRoiVQxd873nMPs+OSXs=";
     };
   };
   mainProgram = "gurk";
