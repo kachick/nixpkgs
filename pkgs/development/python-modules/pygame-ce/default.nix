@@ -61,7 +61,8 @@ buildPythonPackage rec {
         ]) buildInputs
       );
     })
-    # https://github.com/libsdl-org/sdl2-compat/issues/476
+
+    # Can be removed after the SDL 3.4.0 bump.
     ./skip-rle-tests.patch
   ];
 

@@ -19,14 +19,14 @@
 
 buildPythonPackage rec {
   pname = "python-bsblan";
-  version = "2.2.5";
+  version = "3.1.1";
   pyproject = true;
 
   src = fetchFromGitHub {
     owner = "liudger";
     repo = "python-bsblan";
     tag = "v${version}";
-    hash = "sha256-kPkKgjze3ohaIaDax3h66JWw5tY+3S0N+lPqXSFFcRY=";
+    hash = "sha256-U/JlwJoNlRUm7gMEw5AHuazl+qXeF+pnqfICbVuvnQQ=";
   };
 
   postPatch = ''
@@ -59,11 +59,11 @@ buildPythonPackage rec {
 
   pythonImportsCheck = [ "bsblan" ];
 
-  meta = with lib; {
+  meta = {
     description = "Module to control and monitor an BSBLan device programmatically";
     homepage = "https://github.com/liudger/python-bsblan";
     changelog = "https://github.com/liudger/python-bsblan/releases/tag/${src.tag}";
-    license = licenses.mit;
-    maintainers = with maintainers; [ fab ];
+    license = lib.licenses.mit;
+    maintainers = with lib.maintainers; [ fab ];
   };
 }

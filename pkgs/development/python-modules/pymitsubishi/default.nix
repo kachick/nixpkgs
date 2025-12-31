@@ -11,15 +11,20 @@
 
 buildPythonPackage rec {
   pname = "pymitsubishi";
-  version = "0.4.0";
+  version = "0.4.2";
   pyproject = true;
 
   src = fetchFromGitHub {
     owner = "pymitsubishi";
     repo = "pymitsubishi";
     tag = "v${version}";
-    hash = "sha256-oMv+GKdl1H1S5mYUYfTUHuLM5yvkvD44dy9DEsQVAyg=";
+    hash = "sha256-frqyAXAP2O8TZzXx5ephcLSLJA9p0P74KJrPoSKPYYo=";
   };
+
+  postPatch = ''
+    # make sure pyproject.toml specifies the correct version
+    grep -qF 'version = "${version}"' pyproject.toml
+  '';
 
   build-system = [ setuptools ];
 

@@ -8,13 +8,13 @@
 
 buildGoModule rec {
   pname = "certinfo";
-  version = "1.0.38";
+  version = "1.0.39";
 
   src = fetchFromGitHub {
     owner = "pete911";
     repo = "certinfo";
     rev = "v${version}";
-    sha256 = "sha256-3CAl/Kf20JMcq7aLOviwxpHkYXnOd2WXqC8o2TLEXGY=";
+    sha256 = "sha256-U3uVQiALtI7aWkIPQyHxSzMTD6AjAMoOEjkbPO07SdA=";
   };
 
   # clipboard functionality not working on Darwin
@@ -24,11 +24,11 @@ buildGoModule rec {
 
   vendorHash = null;
 
-  meta = with lib; {
+  meta = {
     description = "Print x509 certificate info";
     mainProgram = "certinfo";
     homepage = "https://github.com/pete911/certinfo";
-    license = licenses.mit;
-    maintainers = with maintainers; [ jakuzure ];
+    license = lib.licenses.mit;
+    maintainers = with lib.maintainers; [ jakuzure ];
   };
 }

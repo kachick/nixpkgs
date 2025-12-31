@@ -31,13 +31,13 @@ let
 in
 buildGoModule rec {
   pname = "telepresence2";
-  version = "2.25.0";
+  version = "2.25.2";
 
   src = fetchFromGitHub {
     owner = "telepresenceio";
     repo = "telepresence";
     rev = "v${version}";
-    hash = "sha256-ke3Si55CVc3JJgzwcCXmeGiT1GQKF+8ocrNfiLtRRcA=";
+    hash = "sha256-7QLx+t8Y9r8iO53gtbeK3SOEhYN6NZTWzCe+bhWl3JA=";
   };
 
   propagatedBuildInputs = [
@@ -51,7 +51,7 @@ buildGoModule rec {
     export CGO_ENABLED=0
   '';
 
-  vendorHash = "sha256-R+7tw2nX2rM46ETOgcQuwMCRLU23ejtNOGA3Bt/+Guw=";
+  vendorHash = "sha256-Zroh9/FKG+wm8nX+t+TpJQeT2nFi8UrzxAWnNAaMt8Q=";
 
   ldflags = [
     "-s"
@@ -61,11 +61,11 @@ buildGoModule rec {
 
   subPackages = [ "cmd/telepresence" ];
 
-  meta = with lib; {
+  meta = {
     description = "Local development against a remote Kubernetes or OpenShift cluster";
     homepage = "https://telepresence.io";
-    license = licenses.asl20;
-    maintainers = with maintainers; [
+    license = lib.licenses.asl20;
+    maintainers = with lib.maintainers; [
       mausch
       vilsol
       wrbbz

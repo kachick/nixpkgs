@@ -30,7 +30,7 @@ let
   inherit (python3Packages)
     docutils
     python
-    fb-re2
+    google-re2
     pygit2
     pygments
     setuptools
@@ -63,8 +63,12 @@ let
         null;
     cargoRoot = if rustSupport then "rust" else null;
 
+    # enable building with Python 3.14
+    # FIXME remove once PyO3 is updated in Cargo.lock
+    env.PYO3_USE_ABI3_FORWARD_COMPATIBILITY = 1;
+
     propagatedBuildInputs =
-      lib.optional re2Support fb-re2
+      lib.optional re2Support google-re2
       ++ lib.optional gitSupport pygit2
       ++ lib.optional highlightSupport pygments;
     nativeBuildInputs = [

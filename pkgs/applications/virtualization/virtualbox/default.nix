@@ -76,9 +76,9 @@ let
   virtualboxSubVersion = "";
   virtualboxSha256 = "d281ec981b5f580211a0cedd1b75a1adcb0fbfcbb768d8c2bf4429f4763e8bbd";
 
-  kvmPatchVboxVersion = "7.2.0";
-  kvmPatchVersion = "20250903";
-  kvmPatchHash = "sha256-JTE9Kr+nJ6HLeDrzL2EVyDQhxzn3UsoQVIQ6zNCwioY=";
+  kvmPatchVboxVersion = "7.2.4";
+  kvmPatchVersion = "20251103";
+  kvmPatchHash = "sha256-VhSuRYiZLg8hIGatf27u/nBBBtB1zz4ePxtiRYy84Hw=";
 
   # The KVM build is not compatible to VirtualBox's kernel modules. So don't export
   # modsrc at all.
@@ -230,6 +230,14 @@ stdenv.mkDerivation (finalAttrs: {
       (fetchpatch {
         url = "https://salsa.debian.org/pkg-virtualbox-team/virtualbox/-/raw/8028d88e6876ca5977de13c58b54e243229efe98/debian/patches/16-no-update.patch";
         hash = "sha256-AGtFsRjwd8Yw296eqX3NC2TUptAhpFTRaOMutiheQ6Y=";
+      })
+      # NAT network shouldn't fully saturate one CPU
+      # https://github.com/VirtualBox/virtualbox/issues/356
+      (fetchpatch {
+        name = "vbox-nat-cpu.patch";
+        url = "https://github.com/VirtualBox/virtualbox/commit/efa378dadd192af8fbce331e9ec66fb36d65ad3d.diff";
+        hash = "sha256-7u3kSszv77leZdMs911TzAchU5mBqmNpgvuZDQaY9To=";
+        hunks = [ "2-" ];
       })
     ]
     ++ [ ./extra_symbols.patch ]
@@ -419,13 +427,10 @@ stdenv.mkDerivation (finalAttrs: {
     license = lib.licenses.gpl3Only;
     homepage = "https://www.virtualbox.org/";
     maintainers = with lib.maintainers; [
-      sander
       friedrichaltheide
       blitz
     ];
     platforms = [ "x86_64-linux" ];
     mainProgram = "VirtualBox";
-    # Patch is not compatible with the current version of Virtualbox
-    broken = enableKvm;
   };
 })

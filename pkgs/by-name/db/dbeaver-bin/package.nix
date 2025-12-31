@@ -18,23 +18,23 @@
 
 stdenvNoCC.mkDerivation (finalAttrs: {
   pname = "dbeaver-bin";
-  version = "25.2.3";
+  version = "25.3.1";
 
   src =
     let
       inherit (stdenvNoCC.hostPlatform) system;
       selectSystem = attrs: attrs.${system} or (throw "Unsupported system: ${system}");
       suffix = selectSystem {
-        x86_64-linux = "linux.gtk.x86_64-nojdk.tar.gz";
-        aarch64-linux = "linux.gtk.aarch64-nojdk.tar.gz";
+        x86_64-linux = "linux.gtk.x86_64.tar.gz";
+        aarch64-linux = "linux.gtk.aarch64.tar.gz";
         x86_64-darwin = "macos-x86_64.dmg";
         aarch64-darwin = "macos-aarch64.dmg";
       };
       hash = selectSystem {
-        x86_64-linux = "sha256-tOUOZP+A3vB73xvAj+OEvCR+APbwlKLwZN9iJYi/W7c=";
-        aarch64-linux = "sha256-yQ6+kZP22CtdaKQiRgWoYvUDMLz1mdlV3AWC+nKQVBI=";
-        x86_64-darwin = "sha256-tIkAkBcnF37sZV2ZHSgqe3PnAqSoU7iYRu8tNZ8fhfE=";
-        aarch64-darwin = "sha256-imkW4Dz8qWjIKLT6CvdjhIjWpEmfKk1MWVh5+NGujb4=";
+        x86_64-linux = "sha256-+9bKKfLFR+9iBv/Sgwbd/gVpUa2c4uvkZGzx61x5bJ8=";
+        aarch64-linux = "sha256-sfrytO39RnqODECo0CPj2tusvZBIo5I9KuRqzoLbE0M=";
+        x86_64-darwin = "sha256-74EMwaG2xmH2gEyhcwqZKgVzNOup81DG8T8DmELN53g=";
+        aarch64-darwin = "sha256-cJ9hS/jQySoGbXd0yLmBNlVak8OOnMW2ToXojnx9Th4=";
       };
     in
     fetchurl {
@@ -76,10 +76,9 @@ stdenvNoCC.mkDerivation (finalAttrs: {
     pushd ${lib.optionalString stdenvNoCC.hostPlatform.isDarwin "Contents/Eclipse/"}plugins/com.sun.jna_*/com/sun/jna/
     rm -r !(ptr|internal|linux-x86-64|linux-aarch64|darwin-x86-64|darwin-aarch64)/
     popd
-  ''
-  # remove the bundled JRE on Darwin
-  + lib.optionalString stdenvNoCC.hostPlatform.isDarwin ''
-    rm -r Contents/Eclipse/jre/
+
+    # remove the bundled JRE
+    rm -r ${lib.optionalString stdenvNoCC.hostPlatform.isDarwin "Contents/Eclipse/"}jre/
   '';
 
   installPhase =

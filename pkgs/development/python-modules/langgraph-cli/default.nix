@@ -24,14 +24,14 @@
 
 buildPythonPackage rec {
   pname = "langgraph-cli";
-  version = "0.4.5";
+  version = "0.4.11";
   pyproject = true;
 
   src = fetchFromGitHub {
     owner = "langchain-ai";
     repo = "langgraph";
     tag = "cli==${version}";
-    hash = "sha256-YGO1eq1IEKkxuH/9ZsaeaWpQ2vD97du32iopdXFqZf8=";
+    hash = "sha256-sr3AtcrG9V0c5UBdSXyaX3bCxzrSONpY28L5jlomZuM=";
   };
 
   sourceRoot = "${src.name}/libs/cli";
@@ -56,7 +56,7 @@ buildPythonPackage rec {
     pytestCheckHook
     docker-compose
   ]
-  ++ lib.flatten (builtins.attrValues optional-dependencies);
+  ++ lib.concatAttrValues optional-dependencies;
 
   enabledTestPaths = [ "tests/unit_tests" ];
 

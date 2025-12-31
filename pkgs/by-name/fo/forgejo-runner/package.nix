@@ -6,6 +6,8 @@
   nixosTests,
   versionCheckHook,
   nix-update-script,
+  gitMinimal,
+  makeWrapper,
 }:
 
 let
@@ -17,7 +19,7 @@ let
     # The following tests were introduced in 9.x with the inclusion of act
     # the pkgs/by-name/ac/act/package.nix just sets doCheck = false;
 
-    # Requires running docker install
+    # Requires running Docker daemon
     "TestDocker"
     "TestJobExecutor"
     "TestRunner"
@@ -29,7 +31,7 @@ let
     # Reaches out to different websites
     "TestFindGitRemoteURL"
     "TestGitFindRef"
-    "TestGitCloneExecutor"
+    "TestClone"
     "TestCloneIfRequired"
     "TestActionCache"
     "TestRunContext_GetGitHubContext"
@@ -38,21 +40,27 @@ let
     # These tests rely on outbound IP address
     "TestHandler"
     "TestHandler_gcCache"
+  ]
+  ++ lib.optionals stdenv.isDarwin [
+    # Uses docker-specific options, unsupported on Darwin
+    "TestMergeJobOptions"
   ];
 in
 buildGoModule rec {
   pname = "forgejo-runner";
-  version = "11.2.0";
+  version = "12.3.1";
 
   src = fetchFromGitea {
     domain = "code.forgejo.org";
     owner = "forgejo";
     repo = "runner";
     rev = "v${version}";
-    hash = "sha256-hjrn36Fm2kIKqn16DOPcrMF38dhsGOZVHCTrhkS99QQ=";
+    hash = "sha256-Rw6/G4gbWKikYjeKYw2cHxLMw8ULqnbhqHQFDzHCMrY=";
   };
 
-  vendorHash = "sha256-QokVTTfMGAJG4Jqfs7mfGXrC4QSZfOXesfF2OeN0L9M=";
+  vendorHash = "sha256-ReGxoPvW4G6DbFfR2OeeT3tupZkpLpX80zK824oeyVg=";
+
+  nativeBuildInputs = [ makeWrapper ];
 
   # See upstream Makefile
   # https://code.forgejo.org/forgejo/runner/src/branch/main/Makefile
@@ -64,7 +72,7 @@ buildGoModule rec {
   ldflags = [
     "-s"
     "-w"
-    "-X code.forgejo.org/forgejo/runner/v11/internal/pkg/ver.version=${src.rev}"
+    "-X code.forgejo.org/forgejo/runner/v12/internal/pkg/ver.version=${src.rev}"
   ];
 
   checkFlags = [
@@ -72,17 +80,22 @@ buildGoModule rec {
   ];
 
   postInstall = ''
-    # fix up go-specific executable naming derived from package name, upstream
+    # Fix up go-specific executable naming derived from package name, upstream
     # also calls it `forgejo-runner`
     mv $out/bin/runner $out/bin/forgejo-runner
-    # provide old binary name for compatibility
+
+    # Provide backward compatbility since v12 removed bundled git
+    wrapProgram $out/bin/forgejo-runner --suffix PATH : ${lib.makeBinPath [ gitMinimal ]}
+
+    # Provide old binary name for compatibility
     ln -s $out/bin/forgejo-runner $out/bin/act_runner
   '';
+
+  nativeCheckInputs = [ gitMinimal ];
 
   doInstallCheck = true;
   nativeInstallCheckInputs = [ versionCheckHook ];
   versionCheckProgram = "${placeholder "out"}/bin/${meta.mainProgram}";
-  versionCheckProgramArg = "--version";
 
   passthru = {
     updateScript = nix-update-script { };
@@ -91,17 +104,13 @@ buildGoModule rec {
     };
   };
 
-  meta = with lib; {
+  meta = {
     description = "Runner for Forgejo based on act";
     homepage = "https://code.forgejo.org/forgejo/runner";
     changelog = "https://code.forgejo.org/forgejo/runner/releases/tag/${src.rev}";
-    license = licenses.gpl3Plus;
-    maintainers = with maintainers; [
-      adamcstephens
-      emilylange
-      christoph-heiss
-      tebriel
-    ];
+    license = lib.licenses.gpl3Plus;
+    maintainers = with lib.maintainers; [ nrabulinski ];
+    teams = [ lib.teams.forgejo ];
     mainProgram = "forgejo-runner";
   };
 }

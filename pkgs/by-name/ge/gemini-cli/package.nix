@@ -8,21 +8,24 @@
   clang_20,
   libsecret,
   ripgrep,
+  nodejs_22,
   nix-update-script,
 }:
 
 buildNpmPackage (finalAttrs: {
   pname = "gemini-cli";
-  version = "0.11.3";
+  version = "0.22.4";
 
   src = fetchFromGitHub {
     owner = "google-gemini";
     repo = "gemini-cli";
     tag = "v${finalAttrs.version}";
-    hash = "sha256-43ohCUqdM0quxwoN3s/3vOq4IRc+sck+BkAfqMEDq8g=";
+    hash = "sha256-gYh8GpuBwkowdBNCYkh7w2MFSTw8xXYO4XbQBezzFlQ=";
   };
 
-  npmDepsHash = "sha256-wqzsHBFXo5NhsFHOErxVVG9Y08daEQs6YdRZHFeOq98=";
+  nodejs = nodejs_22;
+
+  npmDepsHash = "sha256-f5s2T+826rZU8IXe4fv26JiR3laPunbKeJSRnst6upw=";
 
   nativeBuildInputs = [
     jq
@@ -46,12 +49,31 @@ buildNpmPackage (finalAttrs: {
 
     # Remove node-pty dependency from packages/core/package.json
     ${jq}/bin/jq 'del(.optionalDependencies."node-pty")' packages/core/package.json > packages/core/package.json.tmp && mv packages/core/package.json.tmp packages/core/package.json
+
+    # Ideal method to disable auto-update
+    sed -i '/disableAutoUpdate: {/,/}/ s/default: false/default: true/' packages/cli/src/config/settingsSchema.ts
+
+    # Disable auto-update for real because the default value in settingsSchema isn't cleanly applied
+    # https://github.com/google-gemini/gemini-cli/issues/13569
+    substituteInPlace packages/cli/src/utils/handleAutoUpdate.ts \
+      --replace-fail "settings.merged.general?.disableAutoUpdate ?? false" "settings.merged.general?.disableAutoUpdate ?? true" \
+      --replace-fail "settings.merged.general?.disableAutoUpdate" "(settings.merged.general?.disableAutoUpdate ?? true)"
+    substituteInPlace packages/cli/src/ui/utils/updateCheck.ts \
+      --replace-fail "settings.merged.general?.disableUpdateNag" "(settings.merged.general?.disableUpdateNag ?? true)"
   '';
+
+  # Prevent npmDeps and python from getting into the closure
+  disallowedReferences = [
+    finalAttrs.npmDeps
+    nodejs_22.python
+  ];
 
   installPhase = ''
     runHook preInstall
     mkdir -p $out/{bin,share/gemini-cli}
 
+    npm prune --omit=dev
+    rm node_modules/shell-quote/print.py # remove python demo to prevent python from getting into the closure
     cp -r node_modules $out/share/gemini-cli/
 
     rm -f $out/share/gemini-cli/node_modules/@google/gemini-cli
@@ -77,6 +99,7 @@ buildNpmPackage (finalAttrs: {
     license = lib.licenses.asl20;
     sourceProvenance = with lib.sourceTypes; [ fromSource ];
     maintainers = with lib.maintainers; [
+      brantes
       xiaoxiangmoe
       FlameFlag
       taranarmo

@@ -11,16 +11,16 @@
 
 rustPlatform.buildRustPackage (finalAttrs: {
   pname = "zizmor";
-  version = "1.16.1";
+  version = "1.19.0";
 
   src = fetchFromGitHub {
     owner = "zizmorcore";
     repo = "zizmor";
     tag = "v${finalAttrs.version}";
-    hash = "sha256-B1FdgH8IKvcrynFENgpmwAZC/vbKfHVGvyV8bJMFh7k=";
+    hash = "sha256-GWAjz/RYShjSFgQP1I3AxwVkiUJ9iwhT5R7UIHaLDuk=";
   };
 
-  cargoHash = "sha256-1Mf1/ReLrwD/0TE/PhTicMW80oCehAuTy7taztwg6aE=";
+  cargoHash = "sha256-Zd1lTUtfJf2p6MkscHgpEHvmLufnQYSWoYcQqn0ap+g=";
 
   buildInputs = [
     rust-jemalloc-sys
@@ -42,7 +42,7 @@ rustPlatform.buildRustPackage (finalAttrs: {
   doInstallCheck = true;
 
   passthru.updateScript = nix-update-script {
-    extraArgs = [ "--version-regex=^v([0-9.]+\.[0-9.]+\.[0-9.])+$" ];
+    extraArgs = [ "--version-regex=^v([0-9.]+\\.[0-9.]+\\.[0-9.])+$" ];
   };
 
   meta = {

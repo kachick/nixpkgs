@@ -3,6 +3,8 @@
   stdenv,
   fetchFromGitHub,
   pnpm_10,
+  fetchPnpmDeps,
+  pnpmConfigHook,
   nodejs,
   electron,
   makeWrapper,
@@ -10,28 +12,32 @@
   makeDesktopItem,
   nix-update-script,
 }:
-stdenv.mkDerivation (final: {
+stdenv.mkDerivation (finalAttrs: {
   pname = "splayer";
-  version = "3.0.0-beta.3";
+  version = "3.0.0-beta.7";
 
   src = fetchFromGitHub {
     owner = "imsyy";
     repo = "SPlayer";
-    tag = "v${final.version}";
+    tag = "v${finalAttrs.version}";
     fetchSubmodules = false;
-    hash = "sha256-bfxIIp8Ma52SEhlQirxnqKwG2ivpEOlCZGoQ2rQldYQ=";
+    hash = "sha256-W4XvYQ0O3Qnr9kRxTxt21UkU5dw66ww1qpIY3ph3elE=";
   };
 
-  pnpm = pnpm_10;
-
-  pnpmDeps = final.pnpm.fetchDeps {
-    inherit (final) pname version src;
+  pnpmDeps = fetchPnpmDeps {
+    inherit (finalAttrs)
+      pname
+      version
+      src
+      ;
+    pnpm = pnpm_10;
     fetcherVersion = 2;
-    hash = "sha256-tHz4RtXnoFbSXqV84e6FxHLRHeDyR5sCmVPL0vRNIY8=";
+    hash = "sha256-lcSecyT55hFtRFPK7xtPhSbXynGIOgKIfV5T5tDQzfA=";
   };
 
   nativeBuildInputs = [
-    final.pnpm.configHook
+    pnpmConfigHook
+    pnpm_10
     nodejs
     makeWrapper
     copyDesktopItems
@@ -93,6 +99,8 @@ stdenv.mkDerivation (final: {
         "Audio"
         "Music"
       ];
+      mimeTypes = [ "x-scheme-handler/orpheus" ];
+      extraConfig.X-KDE-Protocols = "orpheus";
     })
   ];
 

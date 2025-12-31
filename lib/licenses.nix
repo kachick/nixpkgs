@@ -64,6 +64,11 @@ lib.mapAttrs mkLicense (
       free = false;
     };
 
+    adobeDisplayPostScript = {
+      spdxId = "Adobe-Display-PostScript";
+      fullName = "Adobe Display PostScript License";
+    };
+
     adobeUtopia = {
       fullName = "Adobe Utopia Font License";
       spdxId = "Adobe-Utopia";
@@ -501,6 +506,11 @@ lib.mapAttrs mkLicense (
       fullName = "curl License";
     };
 
+    dec3Clause = {
+      spdxId = "DEC-3-Clause";
+      fullName = "DEC 3-Clause License";
+    };
+
     doc = {
       spdxId = "DOC";
       fullName = "DOC License";
@@ -665,6 +675,11 @@ lib.mapAttrs mkLicense (
       url = "https://www.gust.org.pl/projects/e-foundry/licenses/GUST-FONT-SOURCE-LICENSE.txt";
     };
 
+    gnuplot = {
+      spdxId = "gnuplot";
+      fullName = "gnuplot License";
+    };
+
     gpl1Only = {
       spdxId = "GPL-1.0-only";
       fullName = "GNU General Public License v1.0 only";
@@ -722,6 +737,11 @@ lib.mapAttrs mkLicense (
       spdxId = "HPND-sell-variant";
     };
 
+    hpndSellVariantMitDisclaimerXserver = {
+      spdxId = "HPND-sell-MIT-disclaimer-xserver";
+      fullName = "Historical Permission Notice and Disclaimer - sell xserver variant with MIT disclaimer";
+    };
+
     hpndDec = {
       fullName = "Historical Permission Notice and Disclaimer - DEC variant";
       spdxId = "HPND-DEC";
@@ -740,6 +760,11 @@ lib.mapAttrs mkLicense (
     hpndUc = {
       spdxId = "HPND-UC";
       fullName = "Historical Permission Notice and Disclaimer - University of California variant";
+    };
+
+    hyphenBulgarian = {
+      fullName = "hyphen-bulgarian License";
+      spdxId = "hyphen-bulgarian";
     };
 
     # Intel's license, seems free
@@ -988,6 +1013,11 @@ lib.mapAttrs mkLicense (
       fullName = "CMU License";
     };
 
+    mit-enna = {
+      spdxId = "MIT-enna";
+      fullName = "enna License";
+    };
+
     mit-feh = {
       spdxId = "MIT-feh";
       fullName = "feh License";
@@ -1096,6 +1126,13 @@ lib.mapAttrs mkLicense (
     nposl3 = {
       spdxId = "NPOSL-3.0";
       fullName = "Non-Profit Open Software License 3.0";
+    };
+
+    # NTP is basically HPND, but spdx and the OSI recognize it
+    # hpnd says "and without fee", ntp "with or without fee"
+    ntp = {
+      spdxId = "NTP";
+      fullName = "NTP License";
     };
 
     nvidiaCuda = {
@@ -1503,6 +1540,11 @@ lib.mapAttrs mkLicense (
     x11 = {
       spdxId = "X11";
       fullName = "X11 License";
+    };
+
+    x11NoPermitPersons = {
+      spdxId = "X11-no-permit-persons";
+      fullName = "X11 no permit persons clause";
     };
 
     xerox = {

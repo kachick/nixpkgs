@@ -7,7 +7,7 @@
 }:
 buildGoModule rec {
   pname = "sesh";
-  version = "2.18.2";
+  version = "2.20.0";
 
   nativeBuildInputs = [
     go-mockery
@@ -16,7 +16,7 @@ buildGoModule rec {
     owner = "joshmedeski";
     repo = "sesh";
     rev = "v${version}";
-    hash = "sha256-ZxO6hUE1/KzcZu0G9NaCgpqy1JfPdUxlAOkqm4bpfxE=";
+    hash = "sha256-YfgxXM8FPRAUk4jxUnQNNB8hMjiB5ZCRY2/S+OgzECs=";
   };
 
   preBuild = ''

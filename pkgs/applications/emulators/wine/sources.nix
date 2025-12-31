@@ -82,6 +82,16 @@ let
     })
   ];
 
+  # Fix build with GCC 15
+  # https://bugs.winehq.org/show_bug.cgi?id=58191
+  patches-add-truncf-to-the-import-library = [
+    (pkgs.fetchpatch {
+      name = "add-truncf-to-the-import-library.patch";
+      url = "https://gitlab.winehq.org/wine/wine/-/commit/ed66bd5c97ecc17c42a4942dafac7d406c1e5120.patch";
+      hash = "sha256-mn0fRZ840MYk1WZsBLcachUzyNmBUSlvf50t9jFGXp0=";
+    })
+  ];
+
   inherit (pkgs) writeShellScript;
 in
 rec {
@@ -114,7 +124,8 @@ rec {
       # Also look for root certificates at $NIX_SSL_CERT_FILE
       ./cert-path.patch
     ]
-    ++ patches-binutils-2_44-fix-wine-older-than-10_2;
+    ++ patches-binutils-2_44-fix-wine-older-than-10_2
+    ++ patches-add-truncf-to-the-import-library;
 
     updateScript = writeShellScript "update-wine-stable" ''
       ${updateScriptPreamble}
@@ -133,9 +144,9 @@ rec {
 
   unstable = fetchurl rec {
     # NOTE: Don't forget to change the hash for staging as well.
-    version = "10.17";
+    version = "10.19";
     url = "https://dl.winehq.org/wine/source/10.x/wine-${version}.tar.xz";
-    hash = "sha256-u/jn3jLOqf4wU2HUr4XjBJIlTEvwIDnuJtrHpmcBtOY=";
+    hash = "sha256-fOxYMjxvKq7nrKk1Fzecu/75biwsWAxo/4XdAAy73UY=";
 
     patches = [
       # Also look for root certificates at $NIX_SSL_CERT_FILE
@@ -145,7 +156,7 @@ rec {
     # see https://gitlab.winehq.org/wine/wine-staging
     staging = fetchFromGitLab {
       inherit version;
-      hash = "sha256-fTEzj3o7A9H9jIh3yhw8SCfNsnVeJ6pyL3jERqhVbr8=";
+      hash = "sha256-GmHeqHZPnFZkntMOJJzRDUN9H+G1qXdacy/Al6T5eZU=";
       domain = "gitlab.winehq.org";
       owner = "wine";
       repo = "wine-staging";
@@ -204,7 +215,8 @@ rec {
       # Also look for root certificates at $NIX_SSL_CERT_FILE
       ./cert-path.patch
     ]
-    ++ patches-binutils-2_44-fix-wine-older-than-10_2;
+    ++ patches-binutils-2_44-fix-wine-older-than-10_2
+    ++ patches-add-truncf-to-the-import-library;
 
     # see https://gitlab.winehq.org/wine/wine-staging
     staging = fetchFromGitLab {

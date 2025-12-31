@@ -11,13 +11,13 @@
 
 buildPythonPackage rec {
   pname = "azure-storage-file-share";
-  version = "12.23.0";
+  version = "12.23.1";
   pyproject = true;
 
   src = fetchPypi {
     pname = "azure_storage_file_share";
     inherit version;
-    hash = "sha256-Zw8npEEA7GwI3V5LuY/Kp7Zh93mYKO3FI6KNbtVrn2Y=";
+    hash = "sha256-naU7VvgJD8U9kz7OWp+yRwEMO0p1/5CKlI4kje+yH64=";
   };
 
   build-system = [ setuptools ];
@@ -41,11 +41,11 @@ buildPythonPackage rec {
     "azure.storage"
   ];
 
-  meta = with lib; {
+  meta = {
     description = "Microsoft Azure File Share Storage Client Library for Python";
     homepage = "https://github.com/Azure/azure-sdk-for-python/tree/main/sdk/storage/azure-storage-file-share";
     changelog = "https://github.com/Azure/azure-sdk-for-python/blob/azure-storage-file-share_${version}/sdk/storage/azure-storage-file-share/CHANGELOG.md";
-    license = licenses.mit;
-    maintainers = with maintainers; [ kamadorueda ];
+    license = lib.licenses.mit;
+    maintainers = with lib.maintainers; [ kamadorueda ];
   };
 }

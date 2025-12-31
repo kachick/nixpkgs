@@ -26,7 +26,6 @@
   xorg,
   withQt ? true,
   qt6,
-  fetchpatch,
 }:
 
 let
@@ -96,13 +95,13 @@ let
 in
 llvmPackages.stdenv.mkDerivation (finalAttrs: {
   pname = "fex";
-  version = "2510";
+  version = "2512";
 
   src = fetchFromGitHub {
     owner = "FEX-Emu";
     repo = "FEX";
     tag = "FEX-${finalAttrs.version}";
-    hash = "sha256-C6Yeqo+KqA6OezxnpBAncTekOrPTgIq0vikQOmxaORA=";
+    hash = "sha256-G61FdzNctTp8jarTcnBXd+MQpMxnPqd33hblvi9UXNo=";
 
     leaveDotGit = true;
     postFetch = ''
@@ -127,16 +126,6 @@ llvmPackages.stdenv.mkDerivation (finalAttrs: {
         External/vixl/test
     '';
   };
-
-  patches = [
-    # Backported fix of unit test build with LLVM 21.
-    # TODO: drop after next release
-    (fetchpatch {
-      name = "unittests-thunklibs-fix-build-with-llvm-21.patch";
-      url = "https://github.com/FEX-Emu/FEX/commit/5af2477d005bb0ab8b11633a678ed5f6121f81b6.patch";
-      hash = "sha256-QdJaexzBSOVaKc3h2uwPbX4iysqvGBDmWH938ZeXcdE=";
-    })
-  ];
 
   postPatch = ''
     substituteInPlace ThunkLibs/GuestLibs/CMakeLists.txt ThunkLibs/HostLibs/CMakeLists.txt \
@@ -203,7 +192,6 @@ llvmPackages.stdenv.mkDerivation (finalAttrs: {
   cmakeFlags = [
     (lib.cmakeFeature "USE_LINKER" "lld")
     (lib.cmakeFeature "OVERRIDE_VERSION" finalAttrs.version)
-    (lib.cmakeBool "BUILD_TESTING" finalAttrs.finalPackage.doCheck)
     (lib.cmakeBool "BUILD_THUNKS" true)
     (lib.cmakeBool "BUILD_FEXCONFIG" withQt)
     (lib.cmakeFeature "X86_32_TOOLCHAIN_FILE" "${toolchain32}")
@@ -213,8 +201,21 @@ llvmPackages.stdenv.mkDerivation (finalAttrs: {
 
   strictDeps = true;
 
-  # Unsupported on non-4K page size kernels (e.g. Apple Silicon)
+  # Running the tests isn't supported on non-4K pagesize systems, but the build
+  # itself doesn't require 4K pagesize. So, to avoid breaking the build, enable
+  # checkPhase by default (so that the check inputs are included) and then
+  # manually disable it if we're running on a non-4K pagesize system.
   doCheck = true;
+  preConfigure = ''
+    if [ "$(getconf PAGESIZE)" != "4096" ]; then
+      echo "Disabling checkPhase due to non-4K pagesize environment"
+      unset doCheck
+      cmakeFlagsArray+=("-DBUILD_TESTING:BOOL=FALSE")
+    else
+      echo "Keeping checkPhase as-is"
+      cmakeFlagsArray+=("${lib.cmakeBool "BUILD_TESTING" finalAttrs.doCheck}")
+    fi
+  '';
 
   nativeCheckInputs = [ nasm ];
   checkInputs = [ catch2_3 ];

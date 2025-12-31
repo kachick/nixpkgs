@@ -15,14 +15,14 @@
 
 buildPythonPackage rec {
   pname = "opower";
-  version = "0.15.8";
+  version = "0.15.9";
   pyproject = true;
 
   src = fetchFromGitHub {
     owner = "tronikos";
     repo = "opower";
     tag = "v${version}";
-    hash = "sha256-JauglgXrzfznyst0UdG8KyAXyzjnUkK7TJVdGhp0PVk=";
+    hash = "sha256-Hqn43KFmte3/zn+f35cxNSLjQ3f7ySPQSVWwMCeQ2Go=";
   };
 
   build-system = [ setuptools ];
@@ -53,11 +53,11 @@ buildPythonPackage rec {
     "test_invalid_auth"
   ];
 
-  meta = with lib; {
+  meta = {
     description = "Module for getting historical and forecasted usage/cost from utilities that use opower.com";
     homepage = "https://github.com/tronikos/opower";
     changelog = "https://github.com/tronikos/opower/releases/tag/${src.tag}";
-    license = licenses.asl20;
-    maintainers = with maintainers; [ fab ];
+    license = lib.licenses.asl20;
+    maintainers = with lib.maintainers; [ fab ];
   };
 }

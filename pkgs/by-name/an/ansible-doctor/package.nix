@@ -8,14 +8,14 @@
 
 python3Packages.buildPythonApplication rec {
   pname = "ansible-doctor";
-  version = "7.3.0";
+  version = "8.1.1";
   pyproject = true;
 
   src = fetchFromGitHub {
     owner = "thegeeklab";
     repo = "ansible-doctor";
     tag = "v${version}";
-    hash = "sha256-4Mep9JA4I5zCciglK/yn4Jxu0EIjHi7WUWeKlLcVcP8=";
+    hash = "sha256-izgSdHK+vVS0UcK32gYDwBn3b1yDCzp2ImjDXZbMrzs=";
   };
 
   build-system = with python3Packages; [
@@ -47,8 +47,6 @@ python3Packages.buildPythonApplication rec {
 
   # ansible.errors.AnsibleError: Unable to create local directories(/private/var/empty/.ansible/tmp)
   nativeCheckInputs = lib.optionals (!stdenv.hostPlatform.isDarwin) [ versionCheckHook ];
-
-  versionCheckProgramArg = "--version";
 
   meta = {
     description = "Annotation based documentation for your Ansible roles";

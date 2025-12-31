@@ -27,13 +27,13 @@ let
 in
 stdenv.mkDerivation (finalAttrs: {
   pname = "SDL_compat";
-  version = "1.2.70";
+  version = "1.2.72";
 
   src = fetchFromGitHub {
     owner = "libsdl-org";
     repo = "sdl12-compat";
     rev = "release-" + finalAttrs.version;
-    hash = "sha256-vmbkeBpuzgq1B/6rp9/Gy8+Y7aF5uz8lC/mK0uA9v7I=";
+    hash = "sha256-dTBsbLJFQSaWWhn1+CCQopq7sBONxvlaAximmo3iYVM=";
   };
 
   nativeBuildInputs = [
@@ -84,10 +84,12 @@ stdenv.mkDerivation (finalAttrs: {
     ln -s $out/lib/pkgconfig/sdl12_compat.pc $out/lib/pkgconfig/sdl.pc
   '';
 
-  # The setup hook scans paths of buildInputs to find SDL related packages and
-  # adds their include and library paths to environment variables. The sdl-config
-  # is patched to use these variables to produce correct flags for compiler.
-  patches = [ ./find-headers.patch ];
+  patches = [
+    # The setup hook scans paths of buildInputs to find SDL related packages and
+    # adds their include and library paths to environment variables. The sdl-config
+    # is patched to use these variables to produce correct flags for compiler.
+    ./find-headers.patch
+  ];
   setupHook = ./setup-hook.sh;
 
   passthru.tests = {

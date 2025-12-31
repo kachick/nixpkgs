@@ -5,25 +5,20 @@ let
 in
 {
   name = "n8n";
-  meta.maintainers = with lib.maintainers; [
-    freezeboy
-    k900
-  ];
+  meta.maintainers = with lib.maintainers; [ k900 ];
 
   node.pkgsReadOnly = false;
 
   nodes.machine =
     { ... }:
     {
-      nixpkgs.config.allowUnfreePredicate =
-        pkg:
-        builtins.elem (lib.getName pkg) [
-          "n8n"
-        ];
-
       services.n8n = {
         enable = true;
-        environment.WEBHOOK_URL = webhookUrl;
+        environment = {
+          WEBHOOK_URL = webhookUrl;
+          N8N_TEMPLATES_ENABLED = false;
+          DB_PING_INTERVAL_SECONDS = 2;
+        };
       };
     };
 
@@ -34,5 +29,8 @@ in
     machine.succeed("grep -qF ${webhookUrl} /etc/systemd/system/n8n.service")
     machine.succeed("grep -qF 'HOME=/var/lib/n8n' /etc/systemd/system/n8n.service")
     machine.fail("grep -qF 'GENERIC_TIMEZONE=' /etc/systemd/system/n8n.service")
+    machine.succeed("grep -qF 'N8N_DIAGNOSTICS_ENABLED=false' /etc/systemd/system/n8n.service")
+    machine.succeed("grep -qF 'N8N_TEMPLATES_ENABLED=false' /etc/systemd/system/n8n.service")
+    machine.succeed("grep -qF 'DB_PING_INTERVAL_SECONDS=2' /etc/systemd/system/n8n.service")
   '';
 }

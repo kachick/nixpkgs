@@ -75,17 +75,22 @@ stdenv.mkDerivation rec {
     ${optionalString withPerl "./configure perl   --module=perl     --perl=${perl}/bin/perl"}
   '';
 
+  env.NIX_CFLAGS_COMPILE = toString [
+    # 'EVP_PKEY_asn1_find_str' is deprecated since OpenSSL 3.6
+    "-Wno-error=deprecated-declarations"
+  ];
+
   passthru.tests = {
     unit-perl = nixosTests.unit-perl;
     unit-php = nixosTests.unit-php;
   };
 
-  meta = with lib; {
+  meta = {
     description = "Dynamic web and application server, designed to run applications in multiple languages";
     mainProgram = "unitd";
     homepage = "https://unit.nginx.org/";
-    license = licenses.asl20;
-    platforms = platforms.linux;
-    maintainers = with maintainers; [ izorkin ];
+    license = lib.licenses.asl20;
+    platforms = lib.platforms.linux;
+    maintainers = with lib.maintainers; [ izorkin ];
   };
 }

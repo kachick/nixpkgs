@@ -93,6 +93,7 @@
   ncurses,
   libepoxy,
   gpgme,
+  gpgmepp,
   libwebp,
   abseil-cpp,
   libepubgen,
@@ -222,16 +223,7 @@ let
     main = importVariant "main.nix";
     help = importVariant "help.nix";
     translations = importVariant "translations.nix";
-    deps = (importVariant "deps.nix") ++ [
-      # TODO: Why is this needed?
-      rec {
-        name = "unowinreg.dll";
-        url = "https://dev-www.libreoffice.org/extern/${md5name}";
-        sha256 = "1infwvv1p6i21scywrldsxs22f62x85mns4iq8h6vr6vlx3fdzga";
-        md5 = "185d60944ea767075d27247c3162b3bc";
-        md5name = "${md5}-${name}";
-      }
-    ];
+    deps = importVariant "deps.nix";
   };
   srcs = {
     third_party = map (
@@ -247,26 +239,29 @@ let
     help = srcsAttributes.help { inherit fetchurl fetchgit; };
   };
 
+  kdeDependencies = [
+    qt6.qtbase.out # has a dev output but you cannot find the headers there
+    qt6.qtmultimedia.out
+    kdePackages.kconfig
+    kdePackages.kcoreaddons
+    kdePackages.ki18n
+    kdePackages.kio
+    kdePackages.kwindowsystem
+  ];
+  mkKdeDeps =
+    pkgs: func:
+    symlinkJoin {
+      name = "libreoffice-kde-dependencies-${version}";
+      paths = flatten (
+        map (e: [
+          (func e)
+        ]) pkgs
+      );
+    };
   # See `postPatch` for details
-  kdeDeps = symlinkJoin {
-    name = "libreoffice-kde-dependencies-${version}";
-    paths = flatten (
-      map
-        (e: [
-          (getDev e)
-          (getLib e)
-        ])
-        [
-          qt6.qtbase
-          qt6.qtmultimedia
-          kdePackages.kconfig
-          kdePackages.kcoreaddons
-          kdePackages.ki18n
-          kdePackages.kio
-          kdePackages.kwindowsystem
-        ]
-    );
-  };
+  kdeDepsIncludes = mkKdeDeps kdeDependencies getDev;
+  kdeDepsLibs = mkKdeDeps kdeDependencies getLib;
+
   tarballPath = "external/tarballs";
 
 in
@@ -364,7 +359,7 @@ stdenv.mkDerivation (finalAttrs: {
     # Fix this path to point to where the headers can actually be found instead.
     substituteInPlace configure.ac --replace-fail \
       'GPGMEPP_CFLAGS=-I/usr/include/gpgme++' \
-      'GPGMEPP_CFLAGS=-I${gpgme.dev}/include/gpgme++'
+      'GPGMEPP_CFLAGS=-I${lib.getDev gpgmepp}/include/gpgme++'
 
     # Fix for Python 3.12
     substituteInPlace configure.ac --replace-fail distutils.sysconfig sysconfig
@@ -428,6 +423,7 @@ stdenv.mkDerivation (finalAttrs: {
       glm
       adwaita-icon-theme
       gpgme
+      gpgmepp
       graphite2
       gtk3
       (harfbuzz.override { withIcu = true; })
@@ -528,10 +524,10 @@ stdenv.mkDerivation (finalAttrs: {
     # The 2nd option is not very Nix'y, but I'll take robust over nice any day.
     # Additionally, it's much easier to fix if LO breaks on the next upgrade (just
     # add the missing dependencies to it).
-    export QT6INC=${kdeDeps}/include
-    export QT6LIB=${kdeDeps}/lib
-    export KF6INC="${kdeDeps}/include ${kdeDeps}/include/KF6"
-    export KF6LIB=${kdeDeps}/lib
+    export QT6INC=${kdeDepsIncludes}/include
+    export QT6LIB=${kdeDepsLibs}/lib
+    export KF6INC="${kdeDepsIncludes}/include ${kdeDepsIncludes}/include/KF6"
+    export KF6LIB=${kdeDepsLibs}/lib
   '';
 
   configureFlags = [
@@ -617,9 +613,6 @@ stdenv.mkDerivation (finalAttrs: {
     # cannot find headers, no idea why
     "--without-system-boost"
 
-    "--with-system-rhino"
-    "--with-rhino-jar=${rhino}/share/java/js.jar"
-
     "--without-system-java-websocket"
   ]
   ++ optionals kdeIntegration [
@@ -627,6 +620,9 @@ stdenv.mkDerivation (finalAttrs: {
     "--enable-qt6"
   ]
   ++ optionals withJava [
+    "--with-system-rhino"
+    "--with-rhino-jar=${rhino}/share/java/js.jar"
+
     "--with-system-beanshell"
     "--with-ant-home=${ant.home}"
     "--with-beanshell-jar=${bsh}"

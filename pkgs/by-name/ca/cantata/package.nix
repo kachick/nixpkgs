@@ -25,14 +25,14 @@
   withHttpStream ? true,
   gst_all_1,
   withReplaygain ? true,
-  ffmpeg,
+  ffmpeg_6,
   speex,
   mpg123,
   withMtp ? true,
   libmtp,
   withOnlineServices ? true,
   withDevices ? true,
-  udisks2,
+  udisks,
   withDynamic ? true,
   withHttpServer ? true,
   withLibVlc ? true,
@@ -92,7 +92,7 @@ let
       ];
       enable = withReplaygain;
       pkgs = [
-        ffmpeg
+        ffmpeg_6
         speex
         mpg123
       ];
@@ -156,7 +156,7 @@ let
     {
       names = [ "UDISKS2" ];
       enable = withUdisks;
-      pkgs = [ udisks2 ];
+      pkgs = [ udisks ];
     }
   ];
 

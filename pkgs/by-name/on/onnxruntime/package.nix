@@ -17,6 +17,7 @@
   perl,
   pkg-config,
   python3Packages,
+  removeReferencesTo,
   re2,
   zlib,
   protobuf,
@@ -44,6 +45,7 @@ let
 
   stdenv = throw "Use effectiveStdenv instead";
   effectiveStdenv = if cudaSupport then cudaPackages.backendStdenv else inputs.stdenv;
+  inherit (cudaPackages) cuda_nvcc;
 
   cudaArchitecturesString = cudaPackages.flags.cmakeCudaArchitecturesString;
 
@@ -95,6 +97,12 @@ effectiveStdenv.mkDerivation rec {
       url = "https://github.com/microsoft/onnxruntime/commit/f7619dc93f592ddfc10f12f7145f9781299163a0.patch";
       hash = "sha256-jxfMB+/Zokcu5DSfZP7QV1E8mTrsLe/sMr+ZCX/Y3m0=";
     })
+    # Handle missing default logger when cpuinfo initialization fails in the build sandbox
+    # TODO: Remove on next release
+    # https://github.com/microsoft/onnxruntime/issues/10038
+    # https://github.com/microsoft/onnxruntime/pull/15661
+    # https://github.com/microsoft/onnxruntime/pull/20509
+    ./cpuinfo-logging.patch
   ]
   ++ lib.optionals cudaSupport [
     # We apply the referenced 1064.patch ourselves to our nix dependency.
@@ -120,7 +128,7 @@ effectiveStdenv.mkDerivation rec {
   )
   ++ lib.optionals cudaSupport [
     cudaPackages.cuda_nvcc
-    cudaPackages.cudnn-frontend
+    removeReferencesTo
   ]
   ++ lib.optionals isCudaJetson [
     cudaPackages.autoAddCudaCompatRunpath
@@ -158,6 +166,7 @@ effectiveStdenv.mkDerivation rec {
       libcusparse # cusparse.h
       libcufft # cufft.h
       cudnn # cudnn.h
+      cudnn-frontend
       cuda_cudart
     ]
     ++ lib.optionals ncclSupport [ nccl ]
@@ -228,18 +237,22 @@ effectiveStdenv.mkDerivation rec {
     (lib.cmakeBool "onnxruntime_USE_ROCM" rocmSupport)
     (lib.cmakeBool "onnxruntime_ENABLE_LTO" (!cudaSupport || cudaPackages.cudaOlder "12.8"))
   ]
+  ++ lib.optionals (effectiveStdenv.cc.isClang || rocmSupport) [
+    # Disable -Werror from COMPILE_WARNING_AS_ERROR target property
+    "--compile-no-warning-as-error"
+  ]
   ++ lib.optionals pythonSupport [
     (lib.cmakeBool "onnxruntime_ENABLE_PYTHON" true)
   ]
   ++ lib.optionals cudaSupport [
+    # Werror and cudnn_frontend deprecations make for a bad time.
+    "--compile-no-warning-as-error"
     (lib.cmakeFeature "FETCHCONTENT_SOURCE_DIR_CUTLASS" "${cutlass}")
     (lib.cmakeFeature "onnxruntime_CUDNN_HOME" "${cudaPackages.cudnn}")
     (lib.cmakeFeature "CMAKE_CUDA_ARCHITECTURES" cudaArchitecturesString)
     (lib.cmakeFeature "onnxruntime_NVCC_THREADS" "1")
   ]
   ++ lib.optionals rocmSupport [
-    # Werror combines with rocprim header issues to cause errors (warp size const deprecation)
-    "--compile-no-warning-as-error"
     (lib.cmakeFeature "CMAKE_HIP_ARCHITECTURES" (
       builtins.concatStringsSep ";" rocmPackages.clr.localGpuTargets or rocmPackages.clr.gpuTargets
     ))
@@ -249,25 +262,21 @@ effectiveStdenv.mkDerivation rec {
     (lib.cmakeBool "onnxruntime_USE_COMPOSABLE_KERNEL_CK_TILE" false)
   ];
 
-  env =
-    lib.optionalAttrs effectiveStdenv.cc.isClang {
-      NIX_CFLAGS_COMPILE = "-Wno-error";
-    }
-    // lib.optionalAttrs rocmSupport {
-      MIOPEN_PATH = rocmPackages.miopen;
-      # HIP steps fail to find ROCm libs when not in HIPFLAGS, causing
-      # fatal error: 'rocrand/rocrand.h' file not found
-      HIPFLAGS = lib.concatMapStringsSep " " (pkg: "-I${lib.getInclude pkg}/include") [
-        rocmPackages.hipblas
-        rocmPackages.hipcub
-        rocmPackages.hiprand
-        rocmPackages.hipsparse
-        rocmPackages.rocblas
-        rocmPackages.rocprim
-        rocmPackages.rocrand
-        rocmPackages.rocthrust
-      ];
-    };
+  env = lib.optionalAttrs rocmSupport {
+    MIOPEN_PATH = rocmPackages.miopen;
+    # HIP steps fail to find ROCm libs when not in HIPFLAGS, causing
+    # fatal error: 'rocrand/rocrand.h' file not found
+    HIPFLAGS = lib.concatMapStringsSep " " (pkg: "-I${lib.getInclude pkg}/include") [
+      rocmPackages.hipblas
+      rocmPackages.hipcub
+      rocmPackages.hiprand
+      rocmPackages.hipsparse
+      rocmPackages.rocblas
+      rocmPackages.rocprim
+      rocmPackages.rocrand
+      rocmPackages.rocthrust
+    ];
+  };
 
   doCheck =
     !(
@@ -317,6 +326,12 @@ effectiveStdenv.mkDerivation rec {
       ../include/onnxruntime/core/providers/cpu/cpu_provider_factory.h \
       ../include/onnxruntime/core/session/onnxruntime_*.h
   '';
+
+  # See comments in `cudaPackages.nccl`
+  postFixup = lib.optionalString cudaSupport ''
+    remove-references-to -t "${lib.getBin cuda_nvcc}" ''${!outputLib}/lib/libonnxruntime_providers_cuda.so
+  '';
+  disallowedRequisites = lib.optionals cudaSupport [ (lib.getBin cuda_nvcc) ];
 
   passthru = {
     inherit cudaSupport cudaPackages ncclSupport; # for the python module

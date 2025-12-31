@@ -36,14 +36,16 @@ buildGoModule rec {
   '';
 
   doInstallCheck = true;
-  versionCheckProgram = "${placeholder "out"}/bin/nats";
 
   meta = {
     description = "NATS Command Line Interface";
     homepage = "https://github.com/nats-io/natscli";
     changelog = "https://github.com/nats-io/natscli/releases/tag/${src.tag}";
     license = lib.licenses.asl20;
-    maintainers = with lib.maintainers; [ fab ];
+    maintainers = with lib.maintainers; [
+      bengsparks
+      fab
+    ];
     mainProgram = "nats";
   };
 }

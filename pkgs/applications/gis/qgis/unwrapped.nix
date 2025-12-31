@@ -21,7 +21,6 @@
   grass,
   gsl,
   hdf5,
-  libspatialindex,
   libspatialite,
   libzip,
   netcdf,
@@ -82,14 +81,18 @@ let
   ];
 in
 mkDerivation rec {
-  version = "3.44.3";
+  version = "3.44.5";
   pname = "qgis-unwrapped";
+  outputs = [
+    "out"
+    "man"
+  ];
 
   src = fetchFromGitHub {
     owner = "qgis";
     repo = "QGIS";
     rev = "final-${lib.replaceStrings [ "." ] [ "_" ] version}";
-    hash = "sha256-g7ZdNLal16b0Fbq492mPpOiNkYc3Bm4c7INWX+2e7H8=";
+    hash = "sha256-VrI3pk7Qi0A9D7ONl18YeX9cFS6NfSU2Hvrzx8JIoXo=";
   };
 
   passthru = {
@@ -115,7 +118,6 @@ mkDerivation rec {
     geos
     gsl
     hdf5
-    libspatialindex
     libspatialite
     libzip
     netcdf
@@ -159,6 +161,9 @@ mkDerivation rec {
     "-DWITH_PDAL=True"
     "-DENABLE_TESTS=False"
     "-DQT_PLUGINS_DIR=${qtbase}/${qtbase.qtPluginPrefix}"
+
+    # See https://github.com/libspatialindex/libspatialindex/issues/276
+    "-DWITH_INTERNAL_SPATIALINDEX=True"
   ]
   ++ lib.optional (!withWebKit) "-DWITH_QTWEBKIT=OFF"
   ++ lib.optional withServer [
@@ -180,7 +185,7 @@ mkDerivation rec {
   dontWrapGApps = true; # wrapper params passed below
 
   postFixup = lib.optionalString withGrass ''
-    # GRASS has to be availble on the command line even though we baked in
+    # GRASS has to be available on the command line even though we baked in
     # the path at build time using GRASS_PREFIX.
     # Using wrapGAppsHook also prevents file dialogs from crashing the program
     # on non-NixOS.
@@ -194,12 +199,11 @@ mkDerivation rec {
   # >9k objects, >3h build time on a normal build slot
   requiredSystemFeatures = [ "big-parallel" ];
 
-  meta = with lib; {
+  meta = {
     description = "Free and Open Source Geographic Information System";
     homepage = "https://www.qgis.org";
-    license = licenses.gpl2Plus;
-    maintainers = with maintainers; [ lsix ];
-    teams = [ teams.geospatial ];
-    platforms = with platforms; linux;
+    license = lib.licenses.gpl2Plus;
+    teams = [ lib.teams.geospatial ];
+    platforms = with lib.platforms; linux;
   };
 }
