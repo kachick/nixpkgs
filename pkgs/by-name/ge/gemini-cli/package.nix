@@ -9,6 +9,7 @@
   libsecret,
   ripgrep,
   nodejs_22,
+  sysctl,
   nix-update-script,
 }:
 
@@ -31,7 +32,12 @@ buildNpmPackage (finalAttrs: {
     jq
     pkg-config
   ]
-  ++ lib.optionals stdenv.isDarwin [ clang_20 ]; # clang_21 breaks @vscode/vsce's optionalDependencies keytar
+  ++ lib.optionals stdenv.isDarwin (
+    [
+      clang_20 # clang_21 breaks @vscode/vsce's optionalDependencies keytar
+    ]
+    ++ lib.optionals stdenv.isx86_64 [ sysctl ]
+  );
 
   buildInputs = [
     ripgrep
