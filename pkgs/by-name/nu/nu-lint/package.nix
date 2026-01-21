@@ -1,5 +1,6 @@
 {
   lib,
+  stdenvNoCC,
   fetchFromGitea,
   rustPlatform,
   nix-update-script,
@@ -18,6 +19,11 @@ rustPlatform.buildRustPackage (finalAttrs: {
   };
 
   cargoHash = "sha256-OSkiB03/VL67kqh7OsekiMRoL8e0tOEGQG1CLKScE2w=";
+
+  nativeBuildInputs = lib.optionals stdenvNoCC.hostPlatform.isDarwin [
+    # Avoids "couldn't find any valid shared libraries matching: ['libclang.dylib']" error on darwin in sandbox mode.
+    rustPlatform.bindgenHook
+  ];
 
   nativeInstallCheckInputs = [ versionCheckHook ];
   versionCheckProgramArg = "--version";
