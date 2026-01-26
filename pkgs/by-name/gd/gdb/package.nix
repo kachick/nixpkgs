@@ -198,7 +198,8 @@ stdenv.mkDerivation (finalAttrs: {
   # Workaround for Apple Silicon, "--target" must be "faked", see eg: https://github.com/Homebrew/homebrew-core/pull/209753
   ++ optional (
     stdenv.hostPlatform.isDarwin && stdenv.hostPlatform.isAarch64
-  ) "--target=x86_64-apple-darwin";
+  ) "--target=x86_64-apple-darwin"
+  ++ optional stdenv.hostPlatform.isDarwin "--disable-werror"; # An workaround for https://github.com/NixOS/nixpkgs/issues/483562
 
   postInstall = ''
     # Remove Info files already provided by Binutils and other packages.
