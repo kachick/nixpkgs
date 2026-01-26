@@ -5,6 +5,7 @@
 
   # Build time
   fetchurl,
+  fetchpatch2,
   pkg-config,
   perl,
   texinfo,
@@ -86,6 +87,12 @@ stdenv.mkDerivation (finalAttrs: {
 
   patches = [
     ./debug-info-from-env.patch
+
+    (fetchpatch2 {
+      name = "remove-tic4x_scan-always-false-condition.patch";
+      url = "https://sourceware.org/git/?p=binutils-gdb.git;a=blobdiff_plain;f=bfd/cpu-tic4x.c;h=e154b8fa3f09bfbdb950ace2fc693bffda096243;hp=0cfacf3c0eb31d769d271d83be5ce511b0c964d7;hb=dece3865c2d6420e8193598a33e8a9cd71598547;hpb=321ac819c4fb534c5887a8f86af320f7f1146d7c";
+      hash = "sha256-fi0JwP47k6S4aqTH0pguQe9XNrwgyvemJxcnbQk64tM=";
+    })
   ]
   ++ optionals stdenv.hostPlatform.isDarwin [
     ./darwin-target-match.patch
@@ -191,7 +198,8 @@ stdenv.mkDerivation (finalAttrs: {
   # Workaround for Apple Silicon, "--target" must be "faked", see eg: https://github.com/Homebrew/homebrew-core/pull/209753
   ++ optional (
     stdenv.hostPlatform.isDarwin && stdenv.hostPlatform.isAarch64
-  ) "--target=x86_64-apple-darwin";
+  ) "--target=x86_64-apple-darwin"
+  ++ optional stdenv.hostPlatform.isDarwin "--disable-werror"; # An workaround for https://github.com/NixOS/nixpkgs/issues/483562
 
   postInstall = ''
     # Remove Info files already provided by Binutils and other packages.
