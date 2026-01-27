@@ -2,7 +2,6 @@
   lib,
   fetchFromGitHub,
   rustPlatform,
-  gitMinimal,
   versionCheckHook,
   nix-update-script,
 }:
@@ -22,10 +21,6 @@ rustPlatform.buildRustPackage (finalAttrs: {
 
   cargoBuildFlags = [
     "--bin=rumdl"
-  ];
-
-  nativeCheckInputs = [
-    gitMinimal
   ];
 
   useNextest = true;
