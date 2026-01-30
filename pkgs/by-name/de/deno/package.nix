@@ -21,11 +21,31 @@
   nodejs,
   git,
   python3,
-  esbuild,
+  buildGoModule,
 }:
 
 let
   canExecute = stdenv.buildPlatform.canExecute stdenv.hostPlatform;
+  esbuild = buildGoModule (finalAttrs: {
+    pname = "esbuild";
+    version = "0.25.5";
+
+    src = fetchFromGitHub {
+      owner = "evanw";
+      repo = "esbuild";
+      tag = "v${finalAttrs.version}";
+      hash = "sha256-jemGZkWmN1x2+ZzJ5cLp3MoXO0oDKjtZTmZS9Be/TDw=";
+    };
+
+    vendorHash = "sha256-+BfxCyg0KkDQpHt/wycy/8CTG6YBA/VJvJFhhzUnSiQ=";
+
+    subPackages = [ "cmd/esbuild" ];
+
+    ldflags = [
+      "-s"
+      "-w"
+    ];
+  });
 in
 rustPlatform.buildRustPackage (finalAttrs: {
   pname = "deno";
