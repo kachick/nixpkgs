@@ -16,6 +16,7 @@
   testers,
   nushell,
   nix-update-script,
+  writableTmpDirAsHomeHook,
   curlMinimal,
 }:
 
@@ -82,6 +83,10 @@ rustPlatform.buildRustPackage {
     )
     runHook postCheck
   '';
+
+  nativeInstallCheckInputs = [
+    writableTmpDirAsHomeHook
+  ];
 
   checkInputs =
     lib.optionals stdenv.hostPlatform.isDarwin [ curlMinimal ]
