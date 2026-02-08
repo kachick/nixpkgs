@@ -22,10 +22,6 @@ rustPlatform.buildRustPackage (finalAttrs: {
 
   cargoHash = "sha256-h80IiE5PMuRP/eBrm3wlNSPHAKQASioQt3Fyoh253PI=";
 
-  cargoBuildFlags = [
-    "--bin=rumdl"
-  ];
-
   nativeBuildInputs = [
     installShellFiles
   ];
@@ -37,8 +33,6 @@ rustPlatform.buildRustPackage (finalAttrs: {
   useNextest = true;
 
   cargoTestFlags = [
-    "--bin"
-    "rumdl"
     # Prefer the "smoke" profile over "ci" to exclude flaky tests: https://github.com/rvben/rumdl/pull/341
     "--profile"
     "smoke"
