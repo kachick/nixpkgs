@@ -36,7 +36,7 @@ rustPlatform.buildRustPackage (finalAttrs: {
 
   useNextest = true;
 
-  checkFlags = [
+  cargoTestFlags = [
     # Prefer the "smoke" profile over "ci" to exclude flaky tests: https://github.com/rvben/rumdl/pull/341
     "--profile"
     "smoke"
