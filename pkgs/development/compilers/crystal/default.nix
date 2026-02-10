@@ -197,6 +197,7 @@ let
         openssl
       ]
       ++ extraBuildInputs
+      ++ lib.optionals withInterpreter [ libffi ]
       ++ lib.optionals stdenv.hostPlatform.isDarwin [ libiconv ];
 
       makeFlags = [
