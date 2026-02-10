@@ -54,9 +54,8 @@ let
     pcre2
     libxml2
     libyaml
-  ]
-  ++ lib.optionals (!stdenv.hostPlatform.isDarwin || stdenv.hostPlatform.isx86_64) [ libffi ]
-  ++ lib.optionals withInterpreter [ pcre2 ];
+    libffi
+  ];
 
   binaryUrl =
     version: rel:
@@ -196,9 +195,8 @@ let
         openssl
       ]
       ++ extraBuildInputs
-      ++ lib.optionals (!stdenv.hostPlatform.isDarwin || stdenv.hostPlatform.isx86_64) [ libffi ]
-      ++ lib.optionals stdenv.hostPlatform.isDarwin [ libiconv ]
-      ++ lib.optionals withInterpreter [ pcre2 ];
+      ++ lib.optionals (!stdenv.hostPlatform.isDarwin || withInterpreter) [ libffi ]
+      ++ lib.optionals stdenv.hostPlatform.isDarwin [ libiconv ];
 
       makeFlags = [
         "CRYSTAL_CONFIG_VERSION=${version}"
