@@ -29,13 +29,14 @@
   tzdata,
   which,
   zlib,
-  # https://github.com/crystal-lang/crystal/issues/12299
   withInterpreter ? false,
 }:
 
 # We need to keep around at least the latest version released with a stable
 # NixOS
 let
+  withInterpreterArg = withInterpreter;
+
   archs = {
     x86_64-linux = "linux-x86_64";
     i686-linux = "linux-i686";
@@ -87,7 +88,7 @@ let
       meta.platforms = lib.attrNames sha256s;
     };
 
-  generic =
+  generic = lib.makeOverridable (
     {
       version,
       sha256,
@@ -100,6 +101,8 @@ let
         "docs"
         "release=1"
       ],
+      # https://github.com/crystal-lang/crystal/issues/12299
+      withInterpreter ? withInterpreterArg,
     }:
     stdenv.mkDerivation (finalAttrs: {
       pname = "crystal";
@@ -283,7 +286,8 @@ let
           donovanglover
         ];
       };
-    });
+    })
+  );
 in
 rec {
   binaryCrystal_1_10 = genericBinary {
