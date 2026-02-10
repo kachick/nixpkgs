@@ -286,6 +286,7 @@ let
           peterhoeg
           donovanglover
         ];
+        broken = withInterpreter && stdenv.hostPlatform.isAarch64;
       };
     })
   );
