@@ -6,6 +6,7 @@
   pkg-config,
   openssl,
   onnxruntime,
+  writableTmpDirAsHomeHook,
   versionCheckHook,
   runCommand,
   writeText,
@@ -32,6 +33,7 @@ rustPlatform.buildRustPackage (finalAttrs: {
 
   nativeBuildInputs = [
     pkg-config
+    writableTmpDirAsHomeHook
   ];
 
   buildInputs = [
