@@ -6,6 +6,7 @@
   pkg-config,
   openssl,
   onnxruntime,
+  writableTmpDirAsHomeHook,
   versionCheckHook,
   runCommand,
   writeText,
@@ -16,22 +17,23 @@
 
 rustPlatform.buildRustPackage (finalAttrs: {
   pname = "magika-cli";
-  version = "1.0.1";
+  version = "1.0.2";
 
   src = fetchFromGitHub {
     owner = "google";
     repo = "magika";
     tag = "cli/v${finalAttrs.version}";
-    hash = "sha256-g/fnSdh2jpOHOLTuR4DUPB1kbC0eKADHLKcfB1q08XI=";
+    hash = "sha256-1WJRkqFQqlSFzr4wkEbRwj1WoxDKTG/1OCtC+914ryY=";
   };
 
-  cargoHash = "sha256-uqnTyedry9nWyO2518r0D3hk6oWb4wQE/Ku0cOkSjBA=";
+  cargoHash = "sha256-rA+GYCWuinwRVWf3VuFbPgmAwl3vDsaxLjCtsKMtpiU=";
 
   cargoRoot = "rust/cli";
   buildAndTestSubdir = finalAttrs.cargoRoot;
 
   nativeBuildInputs = [
     pkg-config
+    writableTmpDirAsHomeHook
   ];
 
   buildInputs = [
@@ -47,7 +49,6 @@ rustPlatform.buildRustPackage (finalAttrs: {
   nativeInstallCheckInputs = [
     versionCheckHook
   ];
-  versionCheckProgramArg = "--version";
 
   passthru = {
     tests = {
