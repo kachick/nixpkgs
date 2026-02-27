@@ -29,7 +29,12 @@ stdenv.mkDerivation (finalAttrs: {
   version = "1.23.1";
 
   passthru.updateScript = _experimental-update-script-combinators.sequence [
-    (nix-update-script { })
+    (nix-update-script {
+      extraArgs = [
+        # Update `pnpmDeps.hash` after sync the pnpm version.
+        "--src-only"
+      ];
+    })
     (lib.getExe (writeShellApplication {
       name = "podman-desktop-dependencies-updater";
       runtimeInputs = [
@@ -50,7 +55,6 @@ stdenv.mkDerivation (finalAttrs: {
       '';
     }))
     (nix-update-script {
-      # Changing the pnpm version requires updating `pnpmDeps.hash`.
       extraArgs = [ "--version=skip" ];
     })
   ];
