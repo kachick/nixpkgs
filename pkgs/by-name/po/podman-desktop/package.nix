@@ -4,9 +4,9 @@
   fetchFromGitHub,
   makeBinaryWrapper,
   copyDesktopItems,
-  electron_39,
+  electron_40,
   nodejs,
-  pnpm_10_29_2,
+  pnpm_10,
   fetchPnpmDeps,
   pnpmConfigHook,
   makeDesktopItem,
@@ -21,12 +21,12 @@
 }:
 
 let
-  electron = electron_39;
+  electron = electron_40;
   appName = "Podman Desktop";
 in
 stdenv.mkDerivation (finalAttrs: {
   pname = "podman-desktop";
-  version = "1.23.1";
+  version = "1.25.1";
 
   passthru.updateScript = _experimental-update-script-combinators.sequence [
     (nix-update-script {
@@ -63,20 +63,20 @@ stdenv.mkDerivation (finalAttrs: {
     owner = "containers";
     repo = "podman-desktop";
     tag = "v${finalAttrs.version}";
-    hash = "sha256-08boCPsuT09OileZUWhB8awXWHrlJzoER2Bx0WXeOHU=";
+    hash = "sha256-x0qpxGfjGJnZwxqx5ITpikdJcMO2q6hwINdFW13wShU=";
   };
 
   pnpmDeps = fetchPnpmDeps {
     inherit (finalAttrs) pname version src;
-    pnpm = pnpm_10_29_2;
-    fetcherVersion = 2;
-    hash = "sha256-nBjAmXzjR0qGCM91UAonQKP0NG7+DXImueSbhbnMK/k=";
+    pnpm = pnpm_10;
+    fetcherVersion = 3;
+    hash = "sha256-wdzj1tCL0f05AjcKvg8ySn3iN9Io0dLO1fUjKob7GnI=";
   };
 
   patches = [
     # podman should be installed with nix; disable auto-installation
     ./extension-no-download-podman.patch
-    ./system-defaults-dir.patch
+    # ./system-defaults-dir.patch
   ];
 
   env.ELECTRON_SKIP_BINARY_DOWNLOAD = "1";
@@ -85,7 +85,7 @@ stdenv.mkDerivation (finalAttrs: {
     makeBinaryWrapper
     nodejs
     pnpmConfigHook
-    pnpm_10_29_2
+    pnpm_10
   ]
   ++ lib.optionals (!stdenv.hostPlatform.isDarwin) [
     copyDesktopItems
