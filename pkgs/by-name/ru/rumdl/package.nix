@@ -46,6 +46,9 @@ rustPlatform.buildRustPackage (finalAttrs: {
     "smoke"
   ];
 
+  # Required for checkPhase
+  __darwinAllowLocalNetworking = true;
+
   postInstall = lib.optionalString (stdenv.buildPlatform.canExecute stdenv.hostPlatform) ''
     installShellCompletion --cmd rumdl \
       --bash <("$out/bin/rumdl" completions bash) \
