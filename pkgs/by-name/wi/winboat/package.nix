@@ -1,6 +1,6 @@
 {
   lib,
-  electron,
+  electron_40,
   zip,
   nodejs_24,
   makeWrapper,
@@ -17,6 +17,9 @@
   nix-update-script,
 }:
 
+let
+  electron = electron_40;
+in
 buildNpmPackage (finalAttrs: {
   pname = "winboat";
   version = "0.9.0";

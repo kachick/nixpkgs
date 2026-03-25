@@ -1,8 +1,11 @@
 {
   lib,
-  buildGoModule,
+  buildGo125Module,
   winboat,
 }:
+let
+  buildGoModule = buildGo125Module;
+in
 buildGoModule {
   inherit (winboat) version src;
   modRoot = "guest_server";
