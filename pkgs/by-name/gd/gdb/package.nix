@@ -10,6 +10,7 @@
   texinfo,
   setupDebugInfoDirs,
   buildPackages,
+  versionCheckHook,
 
   # Run time
   readline,
@@ -196,6 +197,12 @@ stdenv.mkDerivation (finalAttrs: {
     # Remove Info files already provided by Binutils and other packages.
     rm -v $out/share/info/bfd.info
   '';
+
+  nativeInstallCheckInputs = [
+    versionCheckHook
+  ];
+  doInstallCheck = true;
+  versionCheckProgram = "${placeholder "out"}/bin/gdb";
 
   passthru = {
     updateScript = writeScript "update-gdb" ''
