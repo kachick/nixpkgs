@@ -4,7 +4,7 @@
   fetchFromGitHub,
   makeBinaryWrapper,
   copyDesktopItems,
-  electron_40,
+  electron_41,
   nodejs,
   pnpm_10,
   fetchPnpmDeps,
@@ -21,12 +21,12 @@
 }:
 
 let
-  electron = electron_40;
+  electron = electron_41;
   appName = "Podman Desktop";
 in
 stdenv.mkDerivation (finalAttrs: {
   pname = "podman-desktop";
-  version = "1.25.1";
+  version = "1.26.2";
 
   passthru.updateScript = _experimental-update-script-combinators.sequence [
     (nix-update-script {
@@ -63,14 +63,14 @@ stdenv.mkDerivation (finalAttrs: {
     owner = "containers";
     repo = "podman-desktop";
     tag = "v${finalAttrs.version}";
-    hash = "sha256-x0qpxGfjGJnZwxqx5ITpikdJcMO2q6hwINdFW13wShU=";
+    hash = "sha256-VVyKC1z7YECZlbTaFaq2OwGg0k22qBbn/HEOYiJ8fcw=";
   };
 
   pnpmDeps = fetchPnpmDeps {
     inherit (finalAttrs) pname version src;
     pnpm = pnpm_10;
     fetcherVersion = 3;
-    hash = "sha256-wdzj1tCL0f05AjcKvg8ySn3iN9Io0dLO1fUjKob7GnI=";
+    hash = "sha256-k/2ya08JaTEt+dr5xfw1ordwENGm17YFyfKGFej5fdc=";
   };
 
   patches = [
@@ -79,7 +79,10 @@ stdenv.mkDerivation (finalAttrs: {
     # ./system-defaults-dir.patch
   ];
 
-  env.ELECTRON_SKIP_BINARY_DOWNLOAD = "1";
+  env = {
+    ELECTRON_SKIP_BINARY_DOWNLOAD = "1";
+    ELECTRON_OVERRIDE_DIST_PATH = electron.dist;
+  };
 
   nativeBuildInputs = [
     makeBinaryWrapper
