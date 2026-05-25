@@ -23,10 +23,6 @@ rustPlatform.buildRustPackage (finalAttrs: {
 
   cargoHash = "sha256-65do3FDEpGeNX/u9KS+F5yigwBfgVNUBhZImjbWFydU=";
 
-  # Avoiding "rustfmt not found" error in auto_generate_cdp.
-  # ref: https://github.com/mdrokz/auto_generate_cdp/pull/8
-  env.DO_NOT_FORMAT = "true";
-
   nativeBuildInputs = [
     makeWrapper
   ];
