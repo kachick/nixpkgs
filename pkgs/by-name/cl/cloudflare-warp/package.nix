@@ -22,6 +22,12 @@
   common-updater-scripts,
   xar,
   cpio,
+  webkitgtk_4_1,
+  libsoup_3,
+  libayatana-appindicator,
+  libayatana-indicator,
+  ayatana-ido,
+  libdbusmenu,
   headless ? false,
 }:
 
@@ -75,10 +81,17 @@ stdenv.mkDerivation (finalAttrs: {
       libpcap
       openssl
       nss
+      curl
       (lib.getLib stdenv.cc.cc)
     ]
     ++ lib.optionals (!headless) [
       gtk3
+      webkitgtk_4_1
+      libsoup_3
+      libayatana-appindicator
+      libayatana-indicator
+      ayatana-ido
+      libdbusmenu
     ]
   );
 
@@ -101,6 +114,7 @@ stdenv.mkDerivation (finalAttrs: {
 
   autoPatchelfIgnoreMissingDeps = [
     "libpcap.so.0.8"
+    "libjvm.so"
   ];
 
   unpackPhase = lib.optionalString stdenv.hostPlatform.isDarwin ''
@@ -151,12 +165,14 @@ stdenv.mkDerivation (finalAttrs: {
         ''}
         ${lib.optionalString headless ''
           # For headless version, remove GUI components
-          rm $out/bin/warp-taskbar
-          rm -r $out/lib/systemd/user
-          rm -r $out/etc
-          rm -r $out/share/applications
-          rm -r $out/share/icons
-          rm -r $out/share/warp
+          rm -rf $out/bin/warp-taskbar
+          rm -rf $out/lib/systemd/user
+          rm -rf $out/lib/warp
+          rm -rf $out/etc
+          rm -rf $out/share/applications
+          rm -rf $out/share/icons
+          rm -rf $out/share/dbus-1
+          rm -rf $out/share/systemd/user
         ''}
 
         runHook postInstall
