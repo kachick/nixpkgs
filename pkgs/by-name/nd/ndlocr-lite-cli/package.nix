@@ -104,9 +104,5 @@ python3Packages.buildPythonApplication (finalAttrs: {
     ];
     mainProgram = "ndlocr-lite";
     platforms = with lib.platforms; unix ++ windows;
-
-    # aarch64-linux fails cpuinfo test, because /sys/devices/system/cpu/ does not exist in the sandbox:
-    # terminate called after throwing an instance of 'onnxruntime::OnnxRuntimeException'
-    broken = with stdenv.hostPlatform; isLinux && isAarch64;
   };
 })
