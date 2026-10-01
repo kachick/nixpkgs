@@ -2,7 +2,6 @@
   lib,
   fetchFromGitHub,
   rustPlatform,
-  yq-go,
   versionCheckHook,
   nix-update-script,
 }:
@@ -23,14 +22,6 @@ rustPlatform.buildRustPackage (finalAttrs: {
   cargoHash = "sha256-QChEPVDydJXZPm19rK4EnA9FwH62hZE6WBjQHCXJ/7E=";
 
   buildAndTestSubdir = "filen-cli";
-
-  # Upstream configures development-focused linker in config.toml, but drops them in CD:
-  # https://github.com/FilenCloudDienste/filen-rs/commit/29eb4bcd797229958dc0ef6ab12d9a8f8424b200
-  postPatch = ''
-    ${lib.getExe yq-go} -i \
-      'del(.target.aarch64-unknown-linux-gnu, .target.x86_64-unknown-linux-gnu)' \
-      .cargo/config.toml
-  '';
 
   env = {
     # Enable nightly features for higher-ranked-assumptions:
