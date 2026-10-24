@@ -24,6 +24,11 @@ buildGoModule (finalAttrs: {
 
   vendorHash = "sha256-8aC1J/mM7ZTEQBdZwstvHxMKDPqgzjzYztC7shuwu/Q=";
 
+  postPatch = ''
+    substituteInPlace local_repository_test.go \
+      --replace-fail '/home/tmp/' 'filepath.Join(os.UserHomeDir(), "tmp")'
+  '';
+
   nativeCheckInputs = [
     gitMinimal
     writableTmpDirAsHomeHook
