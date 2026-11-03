@@ -13,7 +13,7 @@
 
 let
   crateVersion = "0.2.1";
-  releaseDate = "2026.09.28";
+  releaseDate = "2026.11.02";
 in
 rustPlatform.buildRustPackage (finalAttrs: {
   pname = "systemd-lsp";
@@ -25,7 +25,7 @@ rustPlatform.buildRustPackage (finalAttrs: {
     owner = "JFryy";
     repo = "systemd-lsp";
     tag = "v${releaseDate}";
-    hash = "sha256-ATzepUemul9vWfHFCCAH2yHrhNjsBzTqsjJB2dLi3vE=";
+    hash = "sha256-NMMTHBl6ZQstR+Lh/lSJEQunvvKngOA148LwFbqms/4=";
   };
 
   cargoHash = "sha256-qajr9g7l9Nix9JLZg9yGWx8kn8xAuGC9Yo2Q+4dAS/M=";
